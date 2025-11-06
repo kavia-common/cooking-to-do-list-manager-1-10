@@ -6,6 +6,7 @@ import NavigationDrawer from './components/NavigationDrawer';
 import TaskList from './components/TaskList';
 import TaskFormModal from './components/TaskFormModal';
 import FAB from './components/FAB';
+import Recipes from './components/Recipes';
 import { Theme, setCSSVariables } from './theme';
 import { DEFAULT_CATEGORIES, DEFAULT_LISTS, createTask, reorder } from './utils/types';
 import { loadState, saveState } from './utils/storage';
@@ -42,6 +43,25 @@ function App() {
   }, [lists, currentCategory]);
 
   const tasks = useMemo(() => lists[currentCategory] || [], [lists, currentCategory]);
+
+  // Sample Recipes (could be moved to storage or API in future)
+  const sampleRecipes = useMemo(() => ([
+    {
+      title: 'Classic Pancakes',
+      ingredients: ['Flour', 'Eggs', 'Milk', 'Baking Powder', 'Salt', 'Sugar', 'Butter'],
+      steps: ['Mix dry ingredients.', 'Add wet ingredients, whisk.', 'Cook on skillet until golden.'],
+    },
+    {
+      title: 'Spaghetti Aglio e Olio',
+      ingredients: ['Spaghetti', 'Garlic', 'Olive Oil', 'Red Pepper Flakes', 'Parsley', 'Salt'],
+      steps: ['Cook spaghetti.', 'Sauté garlic in oil.', 'Combine with pasta and seasonings.'],
+    },
+    {
+      title: 'Chicken Caesar Salad',
+      ingredients: ['Chicken Breast', 'Romaine Lettuce', 'Parmesan', 'Caesar Dressing', 'Croutons'],
+      steps: ['Grill chicken.', 'Chop lettuce.', 'Toss everything with dressing and serve.'],
+    },
+  ]), []);
 
   // PUBLIC_INTERFACE
   const openAddModal = () => {
@@ -152,6 +172,9 @@ function App() {
               />
             </div>
           </section>
+
+          <a id="recipes" href="#recipes" aria-hidden="true" style={{ position: 'relative', top: '-80px' }} />
+          <Recipes recipes={sampleRecipes} />
         </main>
       </div>
 

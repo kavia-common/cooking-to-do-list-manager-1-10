@@ -70,6 +70,12 @@ export default function NavigationDrawer({ open, current, onSelect, onToggle }) 
               </li>
             );
           })}
+          <li>
+            <a className="nav-item" href="#recipes" onClick={handleClose}>
+              <span className="nav-icon" aria-hidden>📖</span>
+              <span className="nav-label">Recipes</span>
+            </a>
+          </li>
         </ul>
       </aside>
 
