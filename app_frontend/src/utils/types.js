@@ -14,6 +14,7 @@ export const DEFAULT_LISTS = {
 
 // PUBLIC_INTERFACE
 export function createTask(title, notes = '', priority = 'medium') {
+  /** Create a task object for the current category. */
   return {
     id: `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
     title,
@@ -26,6 +27,7 @@ export function createTask(title, notes = '', priority = 'medium') {
 
 // PUBLIC_INTERFACE
 export function reorder(list, startIndex, endIndex) {
+  /** Reorder helper: move item from startIndex to endIndex in a shallow-copied array. */
   const result = Array.from(list);
   const [removed] = result.splice(startIndex, 1);
   result.splice(endIndex, 0, removed);

@@ -31,9 +31,11 @@ function App() {
   // Load from storage on mount
   useEffect(() => {
     const loaded = loadState();
-    if (loaded && loaded.lists && loaded.currentCategory) {
+    if (loaded && loaded.lists) {
       setLists(loaded.lists);
-      setCurrentCategory(loaded.currentCategory);
+      // If a previously saved category no longer exists (e.g., ingredients removed), default to first available
+      const exists = DEFAULT_CATEGORIES.some(c => c.id === loaded.currentCategory);
+      setCurrentCategory(exists ? loaded.currentCategory : DEFAULT_CATEGORIES[0].id);
     }
   }, []);
 

@@ -2,7 +2,8 @@ import React from 'react';
 
 /**
  * PUBLIC_INTERFACE
- * Recipes section that displays a grid of recipe cards with ingredients and steps.
+ * Recipes section that displays a grid of recipe cards with their ingredients and steps.
+ * Note: The 'ingredients' app category has been removed; this section is informational only.
  * Props:
  * - recipes: Array<{ title: string, ingredients: string[], steps: string[] }>
  */
