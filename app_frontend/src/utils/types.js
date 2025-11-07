@@ -1,13 +1,11 @@
 export const DEFAULT_CATEGORIES = [
   { id: 'prep', name: 'Preparation', icon: '🔪' },
-  { id: 'cook', name: 'Cooking', icon: '🍳' },
-  { id: 'serve', name: 'Serving', icon: '🍽️' }
+  { id: 'cook', name: 'Cooking', icon: '🍳' }
 ];
 
 export const DEFAULT_LISTS = {
   prep: [],
-  cook: [],
-  serve: []
+  cook: []
 };
 
 // PUBLIC_INTERFACE

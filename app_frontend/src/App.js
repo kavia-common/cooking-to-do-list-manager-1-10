@@ -32,9 +32,13 @@ function App() {
     const loaded = loadState();
     if (loaded && loaded.lists) {
       setLists(loaded.lists);
-      // If a previously saved category no longer exists (e.g., ingredients removed), default to first available
+      // If a previously saved category no longer exists (e.g., a category removed), default to first available
       const exists = DEFAULT_CATEGORIES.some(c => c.id === loaded.currentCategory);
       setCurrentCategory(exists ? loaded.currentCategory : DEFAULT_CATEGORIES[0].id);
+    } else {
+      // Ensure currentCategory points to a valid category on fresh load
+      const fallback = DEFAULT_CATEGORIES[0]?.id;
+      if (fallback) setCurrentCategory(fallback);
     }
   }, []);
 
@@ -43,7 +47,18 @@ function App() {
     saveState({ lists, currentCategory });
   }, [lists, currentCategory]);
 
-  const tasks = useMemo(() => lists[currentCategory] || [], [lists, currentCategory]);
+  const tasks = useMemo(() => {
+    const arr = lists[currentCategory];
+    return Array.isArray(arr) ? arr : [];
+  }, [lists, currentCategory]);
+
+  // If currentCategory is no longer valid due to legacy state, reset to first available
+  useEffect(() => {
+    const valid = DEFAULT_CATEGORIES.some(c => c.id === currentCategory);
+    if (!valid && DEFAULT_CATEGORIES[0]) {
+      setCurrentCategory(DEFAULT_CATEGORIES[0].id);
+    }
+  }, [currentCategory]);
 
   // PUBLIC_INTERFACE
   const openAddModal = () => {
