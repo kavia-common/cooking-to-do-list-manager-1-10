@@ -51,6 +51,7 @@ function App() {
   const [editing, setEditing] = useState(null); // recipe object being edited
   const [tempName, setTempName] = useState('');
   const [tempDesc, setTempDesc] = useState('');
+  const [showAddRecipe, setShowAddRecipe] = useState(false); // placeholder modal toggle
 
   // Apply Ocean Professional variables and set page title
   useEffect(() => {
@@ -93,6 +94,17 @@ function App() {
           <div className="brand-text">
             <h1>Recipe Examples</h1>
             <p className="subtitle">Simple ideas in an Ocean Professional style</p>
+          </div>
+          <div style={{ marginLeft: 'auto' }}>
+            <button
+              type="button"
+              className="btn primary"
+              aria-label="Add Recipe"
+              title="Add Recipe"
+              onClick={() => setShowAddRecipe(true)}
+            >
+              ➕ Add Recipe
+            </button>
           </div>
         </div>
       </header>
@@ -172,6 +184,41 @@ function App() {
                 <button type="submit" className="btn primary">Save</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {showAddRecipe && (
+        <div className="modal-overlay" role="dialog" aria-modal="true" aria-label="Add recipe (placeholder)">
+          <div className="modal">
+            <div className="modal-header">
+              <h3>Add Recipe</h3>
+              <button className="icon-btn" onClick={() => setShowAddRecipe(false)} aria-label="Close">✕</button>
+            </div>
+            <div className="modal-body">
+              <p style={{ margin: 0, color: 'var(--color-muted)' }}>
+                This feature is under development. Soon you’ll be able to add new recipes here.
+              </p>
+              <div className="modal-actions">
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => {
+                    setShowAddRecipe(false);
+                    alert('Add Recipe: Coming soon!'); // extra explicit notification
+                  }}
+                >
+                  OK
+                </button>
+                <button
+                  type="button"
+                  className="btn primary"
+                  onClick={() => setShowAddRecipe(false)}
+                >
+                  Got it
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
