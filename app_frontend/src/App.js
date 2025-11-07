@@ -93,7 +93,7 @@ function App() {
         <div className="brand">
           <span className="brand-logo" aria-hidden>🍽️</span>
           <div className="brand-text">
-            <h1>Chef Master</h1>
+            <h1 aria-label="Chef Master title">Chef Master</h1>
             <p className="subtitle">Simple ideas in an Ocean Professional style</p>
           </div>
           <div style={{ marginLeft: 'auto' }}>
