@@ -4,7 +4,6 @@ import { DEFAULT_CATEGORIES } from '../utils/types';
 /**
  * PUBLIC_INTERFACE
  * Navigation drawer for category selection with mobile toggle.
- * Ingredients category has been removed from available categories.
  * Props:
  * - open: boolean drawer state
  * - current: current category id
