@@ -34,7 +34,7 @@ function App() {
     setCSSVariables();
     document.body.style.background = Theme.colors.background;
     // Set browser tab title to new branding
-    document.title = 'Chef Assistant';
+    document.title = 'Chef Master';
   }, []);
 
   const onEditRecipe = (recipe) => {
@@ -69,7 +69,7 @@ function App() {
         <div className="brand">
           <span className="brand-logo" aria-hidden>🍽️</span>
           <div className="brand-text">
-            <h1 aria-label="Chef Assistant title">Chef Assistant</h1>
+            <h1 aria-label="Chef Master title">Chef Master</h1>
             <p className="subtitle">Simple ideas in an Ocean Professional style</p>
           </div>
           <div style={{ marginLeft: 'auto' }}>
