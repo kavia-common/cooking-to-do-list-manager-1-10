@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import './index.css';
 import { Theme, setCSSVariables } from './theme';
@@ -18,14 +18,11 @@ function PlaceholderImage({ label }) {
 
 // PUBLIC_INTERFACE
 function App() {
-  // Apply Ocean Professional variables and set page title
-  useEffect(() => {
-    setCSSVariables();
-    document.body.style.background = Theme.colors.background;
-    document.title = 'Recipe Examples';
-  }, []);
-
-  const recipes = [
+  /**
+   * Main Recipes gallery using the Ocean Professional theme.
+   * Replaces per-item actions with Edit and Delete buttons.
+   */
+  const [recipes, setRecipes] = useState([
     {
       id: 'r1',
       name: 'Lemon Herb Chicken',
@@ -50,7 +47,42 @@ function App() {
       desc: 'Layers of yogurt, oats, and blueberries for a fresh start.',
       imgLabel: 'Parfait'
     }
-  ];
+  ]);
+  const [editing, setEditing] = useState(null); // recipe object being edited
+  const [tempName, setTempName] = useState('');
+  const [tempDesc, setTempDesc] = useState('');
+
+  // Apply Ocean Professional variables and set page title
+  useEffect(() => {
+    setCSSVariables();
+    document.body.style.background = Theme.colors.background;
+    document.title = 'Recipe Examples';
+  }, []);
+
+  const onEditRecipe = (recipe) => {
+    setEditing(recipe);
+    setTempName(recipe.name);
+    setTempDesc(recipe.desc);
+  };
+
+  const onDeleteRecipe = (id) => {
+    setRecipes(prev => prev.filter(r => r.id !== id));
+  };
+
+  const onSaveEdit = (e) => {
+    e?.preventDefault?.();
+    if (!editing) return;
+    setRecipes(prev =>
+      prev.map(r =>
+        r.id === editing.id ? { ...r, name: tempName.trim() || r.name, desc: tempDesc.trim() } : r
+      )
+    );
+    setEditing(null);
+  };
+
+  const onCancelEdit = () => {
+    setEditing(null);
+  };
 
   return (
     <div className="ocean-app">
@@ -82,13 +114,67 @@ function App() {
                 <p className="recipe-desc">{r.desc}</p>
               </div>
               <div className="recipe-actions">
-                <button className="btn ghost" type="button" aria-label={`View ${r.name}`}>Preview</button>
-                <button className="btn primary" type="button" aria-label={`Save ${r.name}`}>Save</button>
+                <button
+                  className="btn ghost"
+                  type="button"
+                  aria-label={`Edit ${r.name}`}
+                  onClick={() => onEditRecipe(r)}
+                  title="Edit"
+                >
+                  ✏️ Edit
+                </button>
+                <button
+                  className="btn danger"
+                  type="button"
+                  aria-label={`Delete ${r.name}`}
+                  onClick={() => onDeleteRecipe(r.id)}
+                  title="Delete"
+                >
+                  🗑️ Delete
+                </button>
               </div>
             </article>
           ))}
         </section>
       </main>
+
+      {/* Lightweight edit modal for recipes (accessible) */}
+      {editing && (
+        <div className="modal-overlay" role="dialog" aria-modal="true" aria-label="Edit recipe">
+          <div className="modal">
+            <div className="modal-header">
+              <h3>Edit Recipe</h3>
+              <button className="icon-btn" onClick={onCancelEdit} aria-label="Close">✕</button>
+            </div>
+            <form className="modal-body" onSubmit={onSaveEdit}>
+              <label className="field">
+                <span>Name</span>
+                <input
+                  value={tempName}
+                  onChange={(e) => setTempName(e.target.value)}
+                  placeholder="Recipe name"
+                  aria-label="Recipe name"
+                  required
+                />
+              </label>
+              <label className="field">
+                <span>Description</span>
+                <textarea
+                  value={tempDesc}
+                  onChange={(e) => setTempDesc(e.target.value)}
+                  placeholder="Short description"
+                  rows={3}
+                  aria-label="Recipe description"
+                />
+              </label>
+              <div className="modal-actions">
+                <button type="button" className="btn ghost" onClick={onCancelEdit}>Cancel</button>
+                <button type="submit" className="btn primary">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
