@@ -57,7 +57,7 @@ function App() {
   useEffect(() => {
     setCSSVariables();
     document.body.style.background = Theme.colors.background;
-    document.title = 'Recipe Examples';
+    document.title = 'Chef Agent';
   }, []);
 
   const onEditRecipe = (recipe) => {
@@ -92,7 +92,7 @@ function App() {
         <div className="brand">
           <span className="brand-logo" aria-hidden>🍽️</span>
           <div className="brand-text">
-            <h1>Recipe Examples</h1>
+            <h1>Chef Agent</h1>
             <p className="subtitle">Simple ideas in an Ocean Professional style</p>
           </div>
           <div style={{ marginLeft: 'auto' }}>

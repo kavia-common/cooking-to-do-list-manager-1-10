@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders recipe examples heading', () => {
+test('renders Chef Agent heading', () => {
   render(<App />);
-  const title = screen.getByText(/Recipe Examples/i);
+  const title = screen.getByText(/Chef Agent/i);
   expect(title).toBeInTheDocument();
 });
