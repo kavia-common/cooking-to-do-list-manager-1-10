@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders Chef Master heading', () => {
+test('renders Chef Assistant heading', () => {
   render(<App />);
-  const title = screen.getByText(/Chef Master/i);
+  const title = screen.getByText(/Chef Assistant/i);
   expect(title).toBeInTheDocument();
 });
