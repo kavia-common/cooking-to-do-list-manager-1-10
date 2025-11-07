@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import './index.css';
 import { Theme, setCSSVariables } from './theme';
+import { SAMPLE_RECIPES } from './utils/sampleData';
 
 // Simple placeholder image component
 function PlaceholderImage({ label }) {
@@ -20,34 +21,9 @@ function PlaceholderImage({ label }) {
 function App() {
   /**
    * Main Recipes gallery using the Ocean Professional theme.
-   * Replaces per-item actions with Edit and Delete buttons.
+   * Uses SAMPLE_RECIPES for initial content, including categorized steps.
    */
-  const [recipes, setRecipes] = useState([
-    {
-      id: 'r1',
-      name: 'Lemon Herb Chicken',
-      desc: 'Juicy chicken breasts marinated with fresh lemon, garlic, and herbs.',
-      imgLabel: 'Chicken'
-    },
-    {
-      id: 'r2',
-      name: 'Creamy Tomato Pasta',
-      desc: 'Al dente pasta tossed in a silky tomato and cream sauce.',
-      imgLabel: 'Pasta'
-    },
-    {
-      id: 'r3',
-      name: 'Garden Salad Bowl',
-      desc: 'Crisp greens with cucumber, cherry tomatoes, and a zesty vinaigrette.',
-      imgLabel: 'Salad'
-    },
-    {
-      id: 'r4',
-      name: 'Blueberry Oat Parfait',
-      desc: 'Layers of yogurt, oats, and blueberries for a fresh start.',
-      imgLabel: 'Parfait'
-    }
-  ]);
+  const [recipes, setRecipes] = useState(SAMPLE_RECIPES);
   const [editing, setEditing] = useState(null); // recipe object being edited
   const [tempName, setTempName] = useState('');
   const [tempDesc, setTempDesc] = useState('');
