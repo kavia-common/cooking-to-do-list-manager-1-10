@@ -30,9 +30,21 @@ function App() {
   // Load from storage on mount
   useEffect(() => {
     const loaded = loadState();
-    if (loaded && loaded.lists && loaded.currentCategory) {
-      setLists(loaded.lists);
-      setCurrentCategory(loaded.currentCategory);
+    if (loaded && loaded.lists) {
+      // If a previously saved category no longer exists (e.g., cleanup removed), fallback to default
+      const firstCategory = DEFAULT_CATEGORIES[0].id;
+      const nextCategory = loaded.currentCategory && DEFAULT_CATEGORIES.some(c => c.id === loaded.currentCategory)
+        ? loaded.currentCategory
+        : firstCategory;
+
+      // Ensure lists has an array for the selected category
+      const ensuredLists = {
+        ...loaded.lists,
+        [nextCategory]: Array.isArray(loaded.lists[nextCategory]) ? loaded.lists[nextCategory] : []
+      };
+
+      setLists(ensuredLists);
+      setCurrentCategory(nextCategory);
     }
   }, []);
 
