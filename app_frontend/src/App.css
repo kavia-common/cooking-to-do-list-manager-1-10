@@ -149,6 +149,11 @@ a{color:inherit}
 .lists .list{ padding: 8px 8px 4px; }
 .list h3{ margin: 8px 8px 12px; font-size:14px; color:var(--color-muted); }
 
+/* Recipes view tweaks */
+.recipes-view .task-item .task-title span[aria-hidden]{
+  opacity: 0.85;
+}
+
 /* Task list and items */
 .task-list{ display:flex; flex-direction:column; gap:8px; padding: 0 6px 10px; }
 .empty{

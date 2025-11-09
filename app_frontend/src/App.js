@@ -9,13 +9,14 @@ import FAB from './components/FAB';
 import { Theme, setCSSVariables } from './theme';
 import { DEFAULT_CATEGORIES, DEFAULT_LISTS, createTask, reorder } from './utils/types';
 import { loadState, saveState } from './utils/storage';
+import RecipesView from './components/Recipes/RecipesView';
 
 // PUBLIC_INTERFACE
 function App() {
-  /** App state: theme, drawer, category, lists, modal */
+  /** App state: theme, drawer, currentSection (category id | 'recipes'), lists, modal */
   const [themeMode] = useState('light'); // reserved for future theme toggle
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [currentCategory, setCurrentCategory] = useState(DEFAULT_CATEGORIES[0].id);
+  const [currentSection, setCurrentSection] = useState(DEFAULT_CATEGORIES[0].id);
   const [lists, setLists] = useState(DEFAULT_LISTS);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
@@ -32,26 +33,33 @@ function App() {
     const loaded = loadState();
     if (loaded && loaded.lists && loaded.currentCategory) {
       setLists(loaded.lists);
-      setCurrentCategory(loaded.currentCategory);
+      // migrate existing persistence to currentSection
+      setCurrentSection(loaded.currentCategory);
     }
   }, []);
 
   // Persist state
   useEffect(() => {
+    // keep backward compatible structure with currentCategory
+    const currentCategory =
+      currentSection === 'recipes' ? (DEFAULT_CATEGORIES[0]?.id || 'prep') : currentSection;
     saveState({ lists, currentCategory });
-  }, [lists, currentCategory]);
+  }, [lists, currentSection]);
 
+  const isRecipes = currentSection === 'recipes';
+  const currentCategory = isRecipes ? (DEFAULT_CATEGORIES[0]?.id || 'prep') : currentSection;
   const tasks = useMemo(() => lists[currentCategory] || [], [lists, currentCategory]);
 
   // PUBLIC_INTERFACE
   const openAddModal = () => {
+    if (isRecipes) return; // FAB hidden when recipes, safety guard
     setEditingTask(null);
     setModalOpen(true);
   };
 
   // PUBLIC_INTERFACE
-  const onSelectCategory = (id) => {
-    setCurrentCategory(id);
+  const onSelectSection = (id) => {
+    setCurrentSection(id);
   };
 
   // PUBLIC_INTERFACE
@@ -120,42 +128,48 @@ function App() {
       <div className="content">
         <NavigationDrawer
           open={drawerOpen}
-          current={currentCategory}
-          onSelect={onSelectCategory}
+          current={currentSection}
+          onSelect={onSelectSection}
           onToggle={setDrawerOpen}
         />
         <main className="main">
-          <section className="category-header card">
-            <div className="category-title">
-              <span className="category-icon" aria-hidden>
-                {DEFAULT_CATEGORIES.find(c => c.id === currentCategory)?.icon}
-              </span>
-              <div>
-                <h2>{DEFAULT_CATEGORIES.find(c => c.id === currentCategory)?.name}</h2>
-                <p className="muted">{tasks.filter(t => !t.done).length} active • {tasks.length} total</p>
-              </div>
-            </div>
-            <div className="category-actions">
-              <button className="btn primary" onClick={openAddModal}>Add Task</button>
-            </div>
-          </section>
+          {isRecipes ? (
+            <RecipesView />
+          ) : (
+            <>
+              <section className="category-header card">
+                <div className="category-title">
+                  <span className="category-icon" aria-hidden>
+                    {DEFAULT_CATEGORIES.find(c => c.id === currentCategory)?.icon}
+                  </span>
+                  <div>
+                    <h2>{DEFAULT_CATEGORIES.find(c => c.id === currentCategory)?.name}</h2>
+                    <p className="muted">{tasks.filter(t => !t.done).length} active • {tasks.length} total</p>
+                  </div>
+                </div>
+                <div className="category-actions">
+                  <button className="btn primary" onClick={openAddModal}>Add Task</button>
+                </div>
+              </section>
 
-          <section className="lists">
-            <div className="list card">
-              <h3>Tasks</h3>
-              <TaskList
-                tasks={tasks}
-                onReorder={reorderTasks}
-                onToggleDone={toggleDone}
-                onDelete={deleteTask}
-                onEdit={editTask}
-              />
-            </div>
-          </section>
+              <section className="lists">
+                <div className="list card">
+                  <h3>Tasks</h3>
+                  <TaskList
+                    tasks={tasks}
+                    onReorder={reorderTasks}
+                    onToggleDone={toggleDone}
+                    onDelete={deleteTask}
+                    onEdit={editTask}
+                  />
+                </div>
+              </section>
+            </>
+          )}
         </main>
       </div>
 
-      <FAB onClick={openAddModal} />
+      {!isRecipes && <FAB onClick={openAddModal} />}
       <TaskFormModal
         open={modalOpen}
         onClose={() => { setModalOpen(false); setEditingTask(null); }}
