@@ -1,0 +1,147 @@
+import React, { useMemo, useState } from 'react';
+
+/**
+ * PUBLIC_INTERFACE
+ * TablesManager
+ * Sidebar/section to manage multiple "tables" (lists of categorized tasks).
+ *
+ * Props:
+ * - tables: Array<{id: string, name: string}>
+ * - selectedId: string
+ * - onSelect: (id: string) => void
+ * - onCreate: (name: string) => void
+ * - onRename: (id: string, name: string) => void
+ * - onDelete: (id: string) => void
+ */
+export default function TablesManager({
+  tables,
+  selectedId,
+  onSelect,
+  onCreate,
+  onRename,
+  onDelete
+}) {
+  const [creating, setCreating] = useState(false);
+  const [newName, setNewName] = useState('');
+  const [editingId, setEditingId] = useState(null);
+  const [editName, setEditName] = useState('');
+
+  const canCreate = useMemo(() => newName.trim().length > 0, [newName]);
+  const canRename = useMemo(() => editName.trim().length > 0, [editName]);
+
+  const submitCreate = (e) => {
+    e.preventDefault();
+    const name = newName.trim();
+    if (!name) return;
+    onCreate?.(name);
+    setNewName('');
+    setCreating(false);
+  };
+
+  const submitRename = (e) => {
+    e.preventDefault();
+    const name = editName.trim();
+    if (!name || !editingId) return;
+    onRename?.(editingId, name);
+    setEditingId(null);
+    setEditName('');
+  };
+
+  return (
+    <aside className="nav-drawer" aria-label="Tables">
+      <div className="nav-header">
+        <span className="nav-title">Tables</span>
+        {/* No close button inside primary layout; drawer uses same style class */}
+      </div>
+
+      <ul className="nav-list" style={{ marginTop: 8 }}>
+        {tables.map(t => {
+          const isActive = t.id === selectedId;
+          const itemClass = ['nav-item', isActive ? 'active' : ''].filter(Boolean).join(' ');
+          const isEditing = editingId === t.id;
+
+          return (
+            <li key={t.id}>
+              {!isEditing ? (
+                <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                  <button
+                    className={itemClass}
+                    onClick={() => onSelect?.(t.id)}
+                    aria-current={isActive ? 'page' : undefined}
+                    type="button"
+                    style={{ flex: 1 }}
+                  >
+                    <span className="nav-icon" aria-hidden>🗂️</span>
+                    <span className="nav-label" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {t.name}
+                    </span>
+                  </button>
+                  <button
+                    className="icon-btn"
+                    aria-label={`Rename ${t.name}`}
+                    title="Rename"
+                    onClick={() => { setEditingId(t.id); setEditName(t.name); }}
+                    type="button"
+                  >
+                    ✎
+                  </button>
+                  <button
+                    className="icon-btn danger"
+                    aria-label={`Delete ${t.name}`}
+                    title="Delete"
+                    onClick={() => onDelete?.(t.id)}
+                    type="button"
+                  >
+                    🗑️
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={submitRename} className="field" style={{ padding: 6 }}>
+                  <input
+                    value={editName}
+                    onChange={e => setEditName(e.target.value)}
+                    placeholder="Table name"
+                    aria-label="Table name"
+                  />
+                  <div className="modal-actions" style={{ paddingTop: 6, justifyContent: 'flex-end' }}>
+                    <button type="button" className="btn ghost" onClick={() => { setEditingId(null); setEditName(''); }}>
+                      Cancel
+                    </button>
+                    <button type="submit" className="btn primary" disabled={!canRename}>
+                      Save
+                    </button>
+                  </div>
+                </form>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+
+      {!creating ? (
+        <div style={{ padding: 8 }}>
+          <button className="btn" style={{ width: '100%' }} onClick={() => setCreating(true)} type="button">
+            + New Table
+          </button>
+        </div>
+      ) : (
+        <form onSubmit={submitCreate} className="field" style={{ padding: 8 }}>
+          <input
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            placeholder="e.g., Weeknight Dinners"
+            aria-label="New table name"
+          />
+          <div className="modal-actions" style={{ paddingTop: 6, justifyContent: 'flex-end' }}>
+            <button type="button" className="btn ghost" onClick={() => { setCreating(false); setNewName(''); }}>
+              Cancel
+            </button>
+            <button type="submit" className="btn primary" disabled={!canCreate}>
+              Create
+            </button>
+          </div>
+        </form>
+      )}
+    </aside>
+  );
+}
