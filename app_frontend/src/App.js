@@ -305,7 +305,7 @@ function App() {
                 </div>
                 <div className="category-actions">
                   {/* Add task button adds to currentCategory to keep UX simple */}
-                  <button className="btn primary" onClick={openAddModal}>Add Task</button>
+                  <button className="btn primary" onClick={openAddModal}>Add Recipe</button>
                 </div>
               </section>
 
