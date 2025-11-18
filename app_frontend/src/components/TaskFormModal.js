@@ -61,7 +61,7 @@ export default function TaskFormModal({ open, onClose, onSubmit, initial }) {
           </label>
           <div className="modal-actions">
             <button type="button" className="btn ghost" onClick={onClose}>Cancel</button>
-            <button type="submit" className="btn primary">{initial ? 'Save' : 'Add Recipe'}</button>
+            <button type="submit" className="btn primary">{initial ? 'Save' : 'Add Task'}</button>
           </div>
         </form>
       </div>
