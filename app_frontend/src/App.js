@@ -8,13 +8,13 @@ import TaskFormModal from './components/TaskFormModal';
 import FAB from './components/FAB';
 import { Theme, setCSSVariables } from './theme';
 import { DEFAULT_CATEGORIES, DEFAULT_LISTS, createTask, reorder } from './utils/types';
-import { loadTablesState, saveTablesState } from './utils/tablesStorage';
+import { loadReservationsState, saveReservationsState } from './utils/tablesStorage';
 import { loadState, saveState } from './utils/storage';
-import TablesManager from './components/Tables/TablesManager';
+import ReservationsManager from './components/Tables/TablesManager';
 import RecipesView from './components/Recipes/RecipesView';
 
-// Helpers
-const createTable = (name) => ({
+/** Helpers */
+const createReservation = (name) => ({
   id: `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
   name
 });
@@ -26,18 +26,18 @@ function App() {
    * - themeMode
    * - drawer (categories/recipes)
    * - currentSection: category id | 'recipes'
-   * - tables: [{id, name}]
-   * - selectedTableId: string
-   * - tableLists: {[tableId]: {prep:[], cook:[], serve:[]}}
+   * - reservations: [{id, name}]
+   * - selectedReservationId: string
+   * - reservationLists: {[reservationId]: {prep:[], cook:[], serve:[]}}
    * - task modal + edit
    */
   const [themeMode] = useState('light');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [currentSection, setCurrentSection] = useState(DEFAULT_CATEGORIES[0].id);
 
-  const [tables, setTables] = useState([{ id: 'default', name: 'My Table' }]);
-  const [selectedTableId, setSelectedTableId] = useState('default');
-  const [tableLists, setTableLists] = useState({ default: DEFAULT_LISTS });
+  const [reservations, setReservations] = useState([{ id: 'default', name: 'My Reservation' }]);
+  const [selectedReservationId, setSelectedReservationId] = useState('default');
+  const [reservationLists, setReservationLists] = useState({ default: DEFAULT_LISTS });
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
@@ -49,18 +49,23 @@ function App() {
     document.title = 'Cooking To-Do';
   }, []);
 
-  // Migrate legacy single-list storage into default table if present
+  // Migrate legacy storage and initialize reservations
   useEffect(() => {
-    const tablesState = loadTablesState();
-    if (tablesState && tablesState.tables && tablesState.selectedTableId && tablesState.tableLists) {
-      setTables(tablesState.tables);
-      setSelectedTableId(tablesState.selectedTableId);
-      setTableLists(tablesState.tableLists);
+    const reservationsState = loadReservationsState();
+    if (
+      reservationsState &&
+      reservationsState.reservations &&
+      reservationsState.selectedReservationId &&
+      reservationsState.reservationLists
+    ) {
+      setReservations(reservationsState.reservations);
+      setSelectedReservationId(reservationsState.selectedReservationId);
+      setReservationLists(reservationsState.reservationLists);
     } else {
-      // legacy support
+      // legacy single-list support
       const legacy = loadState();
       if (legacy && legacy.lists) {
-        setTableLists({ default: legacy.lists });
+        setReservationLists({ default: legacy.lists });
       }
     }
     // also restore last category if legacy stored
@@ -70,20 +75,23 @@ function App() {
     }
   }, []);
 
-  // Persist tables state
+  // Persist reservations state
   useEffect(() => {
-    saveTablesState({ tables, selectedTableId, tableLists });
+    saveReservationsState({ reservations, selectedReservationId, reservationLists });
     // keep backward compatibility for currentCategory to avoid breaking previous storage-based tests
     const currentCategory =
       currentSection === 'recipes' ? (DEFAULT_CATEGORIES[0]?.id || 'prep') : currentSection;
-    const lists = tableLists[selectedTableId] || DEFAULT_LISTS;
+    const lists = reservationLists[selectedReservationId] || DEFAULT_LISTS;
     saveState({ lists, currentCategory });
-  }, [tables, selectedTableId, tableLists, currentSection]);
+  }, [reservations, selectedReservationId, reservationLists, currentSection]);
 
   const isRecipes = currentSection === 'recipes';
   const currentCategory = isRecipes ? (DEFAULT_CATEGORIES[0]?.id || 'prep') : currentSection;
 
-  const lists = useMemo(() => tableLists[selectedTableId] || DEFAULT_LISTS, [tableLists, selectedTableId]);
+  const lists = useMemo(
+    () => reservationLists[selectedReservationId] || DEFAULT_LISTS,
+    [reservationLists, selectedReservationId]
+  );
   const tasks = useMemo(() => lists[currentCategory] || [], [lists, currentCategory]);
 
   // PUBLIC_INTERFACE
@@ -101,11 +109,11 @@ function App() {
   // PUBLIC_INTERFACE
   const addTask = (payload) => {
     const newTask = createTask(payload.title, payload.notes, payload.priority);
-    setTableLists(prev => {
-      const curr = prev[selectedTableId] || DEFAULT_LISTS;
+    setReservationLists(prev => {
+      const curr = prev[selectedReservationId] || DEFAULT_LISTS;
       return {
         ...prev,
-        [selectedTableId]: {
+        [selectedReservationId]: {
           ...curr,
           [currentCategory]: [newTask, ...(curr[currentCategory] || [])]
         }
@@ -116,11 +124,11 @@ function App() {
 
   // PUBLIC_INTERFACE
   const updateTask = (payload) => {
-    setTableLists(prev => {
-      const curr = prev[selectedTableId] || DEFAULT_LISTS;
+    setReservationLists(prev => {
+      const curr = prev[selectedReservationId] || DEFAULT_LISTS;
       return {
         ...prev,
-        [selectedTableId]: {
+        [selectedReservationId]: {
           ...curr,
           [currentCategory]: curr[currentCategory].map(t =>
             t.id === editingTask.id ? { ...t, ...payload } : t
@@ -143,11 +151,11 @@ function App() {
 
   // PUBLIC_INTERFACE
   const toggleDone = (id) => {
-    setTableLists(prev => {
-      const curr = prev[selectedTableId] || DEFAULT_LISTS;
+    setReservationLists(prev => {
+      const curr = prev[selectedReservationId] || DEFAULT_LISTS;
       return {
         ...prev,
-        [selectedTableId]: {
+        [selectedReservationId]: {
           ...curr,
           [currentCategory]: curr[currentCategory].map(t =>
             t.id === id ? { ...t, done: !t.done } : t
@@ -159,11 +167,11 @@ function App() {
 
   // PUBLIC_INTERFACE
   const deleteTask = (id) => {
-    setTableLists(prev => {
-      const curr = prev[selectedTableId] || DEFAULT_LISTS;
+    setReservationLists(prev => {
+      const curr = prev[selectedReservationId] || DEFAULT_LISTS;
       return {
         ...prev,
-        [selectedTableId]: {
+        [selectedReservationId]: {
           ...curr,
           [currentCategory]: curr[currentCategory].filter(t => t.id !== id)
         }
@@ -179,11 +187,11 @@ function App() {
 
   // PUBLIC_INTERFACE
   const reorderTasks = (startIndex, endIndex) => {
-    setTableLists(prev => {
-      const curr = prev[selectedTableId] || DEFAULT_LISTS;
+    setReservationLists(prev => {
+      const curr = prev[selectedReservationId] || DEFAULT_LISTS;
       return {
         ...prev,
-        [selectedTableId]: {
+        [selectedReservationId]: {
           ...curr,
           [currentCategory]: reorder(curr[currentCategory], startIndex, endIndex)
         }
@@ -191,44 +199,44 @@ function App() {
     });
   };
 
-  // Tables CRUD
+  // Reservations CRUD
   // PUBLIC_INTERFACE
-  const handleCreateTable = (name) => {
-    const t = createTable(name);
-    setTables(prev => [t, ...prev]);
-    setTableLists(prev => ({ ...prev, [t.id]: { ...DEFAULT_LISTS } }));
-    setSelectedTableId(t.id);
+  const handleCreateReservation = (name) => {
+    const r = createReservation(name);
+    setReservations(prev => [r, ...prev]);
+    setReservationLists(prev => ({ ...prev, [r.id]: { ...DEFAULT_LISTS } }));
+    setSelectedReservationId(r.id);
   };
 
   // PUBLIC_INTERFACE
-  const handleRenameTable = (id, name) => {
-    setTables(prev => prev.map(t => (t.id === id ? { ...t, name } : t)));
+  const handleRenameReservation = (id, name) => {
+    setReservations(prev => prev.map(r => (r.id === id ? { ...r, name } : r)));
   };
 
   // PUBLIC_INTERFACE
-  const handleDeleteTable = (id) => {
-    // Prevent deleting last table
-    setTables(prev => {
+  const handleDeleteReservation = (id) => {
+    // Prevent deleting last reservation
+    setReservations(prev => {
       if (prev.length <= 1) return prev;
-      const nextTables = prev.filter(t => t.id !== id);
+      const nextReservations = prev.filter(r => r.id !== id);
       // adjust selection if deleting current
-      if (id === selectedTableId) {
-        const fallback = nextTables[0]?.id;
-        if (fallback) setSelectedTableId(fallback);
+      if (id === selectedReservationId) {
+        const fallback = nextReservations[0]?.id;
+        if (fallback) setSelectedReservationId(fallback);
       }
       // also remove lists bucket
-      setTableLists(prevLists => {
+      setReservationLists(prevLists => {
         const n = { ...prevLists };
         delete n[id];
         return n;
       });
-      return nextTables;
+      return nextReservations;
     });
   };
 
   // PUBLIC_INTERFACE
-  const handleSelectTable = (id) => {
-    setSelectedTableId(id);
+  const handleSelectReservation = (id) => {
+    setSelectedReservationId(id);
   };
 
   return (
@@ -237,33 +245,33 @@ function App() {
       <div className="gradient-bg" />
       <Header />
 
-      {/* Quick tables bar (mobile-friendly) */}
-      <div className="tables-strip">
-        <div className="tables-toolbar">
-          {tables.map(t => (
+      {/* Quick reservations bar (mobile-friendly) */}
+      <div className="reservations-strip">
+        <div className="reservations-toolbar">
+          {reservations.map(r => (
             <button
-              key={t.id}
-              className={['tables-chip', t.id === selectedTableId ? 'active' : ''].join(' ')}
-              onClick={() => handleSelectTable(t.id)}
+              key={r.id}
+              className={['reservations-chip', r.id === selectedReservationId ? 'active' : ''].join(' ')}
+              onClick={() => handleSelectReservation(r.id)}
               type="button"
-              title={`Switch to ${t.name}`}
+              title={`Switch to ${r.name}`}
             >
-              {t.name}
+              {r.name}
             </button>
           ))}
         </div>
       </div>
 
       <div className="content">
-        {/* Tables manager sidebar */}
+        {/* Reservations manager sidebar */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <TablesManager
-            tables={tables}
-            selectedId={selectedTableId}
-            onSelect={handleSelectTable}
-            onCreate={handleCreateTable}
-            onRename={handleRenameTable}
-            onDelete={handleDeleteTable}
+          <ReservationsManager
+            reservations={reservations}
+            selectedId={selectedReservationId}
+            onSelect={handleSelectReservation}
+            onCreate={handleCreateReservation}
+            onRename={handleRenameReservation}
+            onDelete={handleDeleteReservation}
           />
           <NavigationDrawer
             open={drawerOpen}
@@ -289,7 +297,7 @@ function App() {
                       {tasks.filter(t => !t.done).length} active • {tasks.length} total
                     </p>
                     <p className="muted" style={{ marginTop: 6 }}>
-                      Table: <strong>{(tables.find(t => t.id === selectedTableId) || {}).name}</strong>
+                      Reservation: <strong>{(reservations.find(r => r.id === selectedReservationId) || {}).name}</strong>
                     </p>
                   </div>
                 </div>

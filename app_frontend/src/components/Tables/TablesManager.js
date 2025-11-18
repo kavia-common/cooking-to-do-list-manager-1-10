@@ -2,19 +2,19 @@ import React, { useMemo, useState } from 'react';
 
 /**
  * PUBLIC_INTERFACE
- * TablesManager
- * Sidebar/section to manage multiple "tables" (lists of categorized tasks).
+ * ReservationsManager
+ * Sidebar/section to manage multiple "reservations" (lists of categorized tasks).
  *
  * Props:
- * - tables: Array<{id: string, name: string}>
+ * - reservations: Array<{id: string, name: string}>
  * - selectedId: string
  * - onSelect: (id: string) => void
  * - onCreate: (name: string) => void
  * - onRename: (id: string, name: string) => void
  * - onDelete: (id: string) => void
  */
-export default function TablesManager({
-  tables,
+export default function ReservationsManager({
+  reservations,
   selectedId,
   onSelect,
   onCreate,
@@ -48,48 +48,48 @@ export default function TablesManager({
   };
 
   return (
-    <aside className="nav-drawer" aria-label="Tables">
+    <aside className="nav-drawer" aria-label="Reservations">
       <div className="nav-header">
-        <span className="nav-title">Tables</span>
+        <span className="nav-title">Reservations</span>
         {/* No close button inside primary layout; drawer uses same style class */}
       </div>
 
       <ul className="nav-list" style={{ marginTop: 8 }}>
-        {tables.map(t => {
-          const isActive = t.id === selectedId;
+        {reservations.map(r => {
+          const isActive = r.id === selectedId;
           const itemClass = ['nav-item', isActive ? 'active' : ''].filter(Boolean).join(' ');
-          const isEditing = editingId === t.id;
+          const isEditing = editingId === r.id;
 
           return (
-            <li key={t.id}>
+            <li key={r.id}>
               {!isEditing ? (
                 <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
                   <button
                     className={itemClass}
-                    onClick={() => onSelect?.(t.id)}
+                    onClick={() => onSelect?.(r.id)}
                     aria-current={isActive ? 'page' : undefined}
                     type="button"
                     style={{ flex: 1 }}
                   >
                     <span className="nav-icon" aria-hidden>🗂️</span>
                     <span className="nav-label" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {t.name}
+                      {r.name}
                     </span>
                   </button>
                   <button
                     className="icon-btn"
-                    aria-label={`Rename ${t.name}`}
+                    aria-label={`Rename ${r.name}`}
                     title="Rename"
-                    onClick={() => { setEditingId(t.id); setEditName(t.name); }}
+                    onClick={() => { setEditingId(r.id); setEditName(r.name); }}
                     type="button"
                   >
                     ✎
                   </button>
                   <button
                     className="icon-btn danger"
-                    aria-label={`Delete ${t.name}`}
+                    aria-label={`Delete ${r.name}`}
                     title="Delete"
-                    onClick={() => onDelete?.(t.id)}
+                    onClick={() => onDelete?.(r.id)}
                     type="button"
                   >
                     🗑️
@@ -100,8 +100,8 @@ export default function TablesManager({
                   <input
                     value={editName}
                     onChange={e => setEditName(e.target.value)}
-                    placeholder="Table name"
-                    aria-label="Table name"
+                    placeholder="Reservation name"
+                    aria-label="Reservation name"
                   />
                   <div className="modal-actions" style={{ paddingTop: 6, justifyContent: 'flex-end' }}>
                     <button type="button" className="btn ghost" onClick={() => { setEditingId(null); setEditName(''); }}>
@@ -121,7 +121,7 @@ export default function TablesManager({
       {!creating ? (
         <div style={{ padding: 8 }}>
           <button className="btn" style={{ width: '100%' }} onClick={() => setCreating(true)} type="button">
-            + New Table
+            + New Reservation
           </button>
         </div>
       ) : (
@@ -130,7 +130,7 @@ export default function TablesManager({
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
             placeholder="e.g., Weeknight Dinners"
-            aria-label="New table name"
+            aria-label="New reservation name"
           />
           <div className="modal-actions" style={{ paddingTop: 6, justifyContent: 'flex-end' }}>
             <button type="button" className="btn ghost" onClick={() => { setCreating(false); setNewName(''); }}>

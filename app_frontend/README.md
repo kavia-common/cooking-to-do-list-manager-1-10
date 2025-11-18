@@ -2,6 +2,8 @@
 
 This project provides a minimal React template with a clean, modern UI and minimal dependencies.
 
+Note: The domain term "Tables" was refactored to "Reservations". Any previous localStorage data will be migrated automatically on first load.
+
 ## Features
 
 - **Lightweight**: No heavy UI frameworks - uses only vanilla CSS and React
