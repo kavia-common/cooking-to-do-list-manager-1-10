@@ -1,7 +1,7 @@
 export const DEFAULT_CATEGORIES = [
   // Keep internal ids stable, only change the visible label to "Recipes"
   { id: 'prep', name: 'Recipes', icon: '🔪' },
-  { id: 'serve', name: 'Serving', icon: '🍽️' }
+  { id: 'serve', name: 'Reservation', icon: '🍽️' }
 ];
 
 export const DEFAULT_LISTS = {
