@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import './index.css';
 import Header from './components/Header';
-import NavigationDrawer from './components/NavigationDrawer';
 import TaskList from './components/TaskList';
 import TaskFormModal from './components/TaskFormModal';
 import FAB from './components/FAB';
@@ -11,8 +10,8 @@ import { Theme, setCSSVariables } from './theme';
 import { DEFAULT_CATEGORIES, DEFAULT_LISTS, createTask, reorder } from './utils/types';
 import { loadReservationsState, saveReservationsState } from './utils/tablesStorage';
 import { loadState, saveState } from './utils/storage';
-import ReservationsManager from './components/Tables/TablesManager';
 import RecipesView from './components/Recipes/RecipesView';
+import UnifiedSidebar from './components/UnifiedSidebar';
 
 /** Helpers */
 const createReservation = (name) => ({
@@ -264,20 +263,18 @@ function App() {
       </div>
 
       <div className="content">
-        {/* Reservations manager sidebar */}
+        {/* Unified sidebar: navigation + reservations */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <ReservationsManager
-            reservations={reservations}
-            selectedId={selectedReservationId}
-            onSelect={handleSelectReservation}
-            onCreate={handleCreateReservation}
-            onRename={handleRenameReservation}
-            onDelete={handleDeleteReservation}
-          />
-          <NavigationDrawer
+          <UnifiedSidebar
             open={drawerOpen}
             current={currentSection}
-            onSelect={onSelectSection}
+            onSelectSection={onSelectSection}
+            reservations={reservations}
+            selectedReservationId={selectedReservationId}
+            onSelectReservation={handleSelectReservation}
+            onCreateReservation={handleCreateReservation}
+            onRenameReservation={handleRenameReservation}
+            onDeleteReservation={handleDeleteReservation}
             onToggle={setDrawerOpen}
           />
         </div>
