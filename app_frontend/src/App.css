@@ -149,6 +149,40 @@ a{color:inherit}
 .lists .list{ padding: 8px 8px 4px; }
 .list h3{ margin: 8px 8px 12px; font-size:14px; color:var(--color-muted); }
 
+/* Category board (multi-box layout) */
+.category-board{
+  display:grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap:16px;
+}
+
+/* Each category appears as a distinct card/box */
+.category-box{
+  grid-column: span 12;
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+}
+
+/* Tighten spacing inside the box list area */
+.box-list{
+  padding: 8px 8px 12px;
+}
+
+/* Header variant inside boxes to ensure separation */
+.box-header{
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 0;
+}
+
+/* Responsive behavior: 1 column mobile, 2 columns tablet, 3 columns desktop */
+@media (min-width: 680px){
+  .category-box{ grid-column: span 6; }
+}
+@media (min-width: 1100px){
+  .category-box{ grid-column: span 4; }
+}
+
 /* Recipes view tweaks */
 .recipes-view .task-item .task-title span[aria-hidden]{
   opacity: 0.85;
