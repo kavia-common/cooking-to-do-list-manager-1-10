@@ -19,7 +19,7 @@ export default function TaskList({ tasks, onReorder, onToggleDone, onDelete, onE
     <div className="task-list" ref={containerRef}>
       {tasks.length === 0 && (
         <div className="empty">
-          <p>No tasks here yet. Use the + button to add a recipe.</p>
+          <p>No tasks here yet. Use the + button to add a task.</p>
         </div>
       )}
       {tasks.map((t, idx) => (

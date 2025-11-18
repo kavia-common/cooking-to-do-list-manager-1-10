@@ -28,7 +28,7 @@ export default function TaskFormModal({ open, onClose, onSubmit, initial }) {
     <div className="modal-overlay" role="dialog" aria-modal="true">
       <div className="modal">
         <div className="modal-header">
-          <h3>{initial ? 'Edit Task' : 'Add Recipe'}</h3>
+          <h3>{initial ? 'Edit Task' : 'Add Task'}</h3>
           <button className="icon-btn" onClick={onClose} aria-label="Close">✕</button>
         </div>
         <form onSubmit={submit} className="modal-body">
