@@ -10,7 +10,7 @@ import { Theme, setCSSVariables } from './theme';
 import { DEFAULT_CATEGORIES, DEFAULT_LISTS, createTask, reorder } from './utils/types';
 import { loadReservationsState, saveReservationsState } from './utils/tablesStorage';
 import { loadState, saveState } from './utils/storage';
-import RecipesView from './components/Recipes/RecipesView';
+
 import UnifiedSidebar from './components/UnifiedSidebar';
 
 /** Helpers */
@@ -79,14 +79,11 @@ function App() {
   useEffect(() => {
     saveReservationsState({ reservations, selectedReservationId, reservationLists });
     // keep backward compatibility for currentCategory to avoid breaking previous storage-based tests
-    const currentCategory =
-      currentSection === 'recipes' ? (DEFAULT_CATEGORIES[0]?.id || 'prep') : currentSection;
     const lists = reservationLists[selectedReservationId] || DEFAULT_LISTS;
     saveState({ lists, currentCategory });
   }, [reservations, selectedReservationId, reservationLists, currentSection]);
 
-  const isRecipes = currentSection === 'recipes';
-  const currentCategory = isRecipes ? (DEFAULT_CATEGORIES[0]?.id || 'prep') : currentSection;
+  const currentCategory = currentSection;
 
   const lists = useMemo(
     () => reservationLists[selectedReservationId] || DEFAULT_LISTS,
@@ -96,7 +93,6 @@ function App() {
 
   // PUBLIC_INTERFACE
   const openAddModal = () => {
-    if (isRecipes) return;
     setEditingTask(null);
     setModalOpen(true);
   };
@@ -266,82 +262,76 @@ function App() {
         </div>
 
         <main className="main">
-          {isRecipes ? (
-            <RecipesView />
-          ) : (
-            <>
-              {/* Top header remains to show reservation context and quick add to current category */}
-              <section className="category-header card">
-                <div className="category-title">
-                  <span className="category-icon" aria-hidden>
-                    {DEFAULT_CATEGORIES.find(c => c.id === currentCategory)?.icon}
-                  </span>
-                  <div>
-                    <h2>{DEFAULT_CATEGORIES.find(c => c.id === currentCategory)?.name}</h2>
-                    <p className="muted">
-                      {tasks.filter(t => !t.done).length} active • {tasks.length} total
-                    </p>
-                    {/* Reservation context removed */}
-                  </div>
+          <>
+            {/* Top header remains to show reservation context and quick add to current category */}
+            <section className="category-header card">
+              <div className="category-title">
+                <span className="category-icon" aria-hidden>
+                  {DEFAULT_CATEGORIES.find(c => c.id === currentCategory)?.icon}
+                </span>
+                <div>
+                  <h2>{DEFAULT_CATEGORIES.find(c => c.id === currentCategory)?.name}</h2>
+                  <p className="muted">
+                    {tasks.filter(t => !t.done).length} active • {tasks.length} total
+                  </p>
                 </div>
-                <div className="category-actions">
-                  {/* Add task button adds to currentCategory to keep UX simple */}
-                  <button className="btn primary" onClick={openAddModal}>add recipes</button>
-                </div>
-              </section>
+              </div>
+              <div className="category-actions">
+                {/* Add task button adds to currentCategory to keep UX simple */}
+                <button className="btn primary" onClick={openAddModal}>Add Task</button>
+              </div>
+            </section>
 
-              {/* Render all categories as distinct boxes with DnD support */}
-              <CategoryBoard
-                lists={lists}
-                onReorder={(catId, start, end) => {
-                  setReservationLists(prev => {
-                    const curr = prev[selectedReservationId] || DEFAULT_LISTS;
-                    return {
-                      ...prev,
-                      [selectedReservationId]: {
-                        ...curr,
-                        [catId]: reorder(curr[catId] || [], start, end)
-                      }
-                    };
-                  });
-                }}
-                onToggleDone={(catId, taskId) => {
-                  setReservationLists(prev => {
-                    const curr = prev[selectedReservationId] || DEFAULT_LISTS;
-                    return {
-                      ...prev,
-                      [selectedReservationId]: {
-                        ...curr,
-                        [catId]: (curr[catId] || []).map(t => t.id === taskId ? { ...t, done: !t.done } : t)
-                      }
-                    };
-                  });
-                }}
-                onDelete={(catId, taskId) => {
-                  setReservationLists(prev => {
-                    const curr = prev[selectedReservationId] || DEFAULT_LISTS;
-                    return {
-                      ...prev,
-                      [selectedReservationId]: {
-                        ...curr,
-                        [catId]: (curr[catId] || []).filter(t => t.id !== taskId)
-                      }
-                    };
-                  });
-                }}
-                onEdit={(catId, task) => {
-                  // Preserve original behavior: open modal using currentCategory context
-                  setCurrentSection(catId);
-                  setEditingTask(task);
-                  setModalOpen(true);
-                }}
-              />
-            </>
-          )}
+            {/* Render all categories as distinct boxes with DnD support */}
+            <CategoryBoard
+              lists={lists}
+              onReorder={(catId, start, end) => {
+                setReservationLists(prev => {
+                  const curr = prev[selectedReservationId] || DEFAULT_LISTS;
+                  return {
+                    ...prev,
+                    [selectedReservationId]: {
+                      ...curr,
+                      [catId]: reorder(curr[catId] || [], start, end)
+                    }
+                  };
+                });
+              }}
+              onToggleDone={(catId, taskId) => {
+                setReservationLists(prev => {
+                  const curr = prev[selectedReservationId] || DEFAULT_LISTS;
+                  return {
+                    ...prev,
+                    [selectedReservationId]: {
+                      ...curr,
+                      [catId]: (curr[catId] || []).map(t => t.id === taskId ? { ...t, done: !t.done } : t)
+                    }
+                  };
+                });
+              }}
+              onDelete={(catId, taskId) => {
+                setReservationLists(prev => {
+                  const curr = prev[selectedReservationId] || DEFAULT_LISTS;
+                  return {
+                    ...prev,
+                    [selectedReservationId]: {
+                      ...curr,
+                      [catId]: (curr[catId] || []).filter(t => t.id !== taskId)
+                    }
+                  };
+                });
+              }}
+              onEdit={(catId, task) => {
+                setCurrentSection(catId);
+                setEditingTask(task);
+                setModalOpen(true);
+              }}
+            />
+          </>
         </main>
       </div>
 
-      {!isRecipes && <FAB onClick={openAddModal} />}
+      <FAB onClick={openAddModal} />
       <TaskFormModal
         open={modalOpen}
         onClose={() => { setModalOpen(false); setEditingTask(null); }}
