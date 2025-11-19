@@ -5,12 +5,12 @@ import { DEFAULT_CATEGORIES } from '../utils/types';
  * PUBLIC_INTERFACE
  * UnifiedSidebar
  * A single sidebar that combines:
- * - Navigation (categories + Recipes)
+ * - Navigation (categories)
  * - Reservations management (list, select, create, rename, delete)
  *
  * Props:
  * - open: boolean (for mobile toggle open/close)
- * - current: current section id (category id or 'recipes')
+ * - current: current section id (category id)
  * - onSelectSection: (id: string) => void
  *
  * - reservations: Array<{id: string, name: string}>
@@ -40,7 +40,6 @@ export default function UnifiedSidebar({
   const items = useMemo(
     () => [
       ...DEFAULT_CATEGORIES.map(c => ({ id: c.id, label: c.name, icon: c.icon })),
-      { id: 'recipes', label: 'Recipes', icon: '📖' },
     ],
     []
   );

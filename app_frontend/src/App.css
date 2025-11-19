@@ -183,10 +183,7 @@ a{color:inherit}
   .category-box{ grid-column: span 4; }
 }
 
-/* Recipes view tweaks */
-.recipes-view .task-item .task-title span[aria-hidden]{
-  opacity: 0.85;
-}
+
 
 /* Task list and items */
 .task-list{ display:flex; flex-direction:column; gap:8px; padding: 0 6px 10px; }

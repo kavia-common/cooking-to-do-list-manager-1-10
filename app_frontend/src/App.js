@@ -24,11 +24,11 @@ function App() {
   /**
    * App state:
    * - themeMode
-   * - drawer (categories/recipes)
-   * - currentSection: category id | 'recipes'
+   * - drawer open/close
+   * - currentSection: category id
    * - reservations: [{id, name}]
    * - selectedReservationId: string
-   * - reservationLists: {[reservationId]: {prep:[], cook:[], serve:[]}}
+   * - reservationLists: {[reservationId]: {prep:[], serve:[]}}
    * - task modal + edit
    */
   const [themeMode] = useState('light');
@@ -80,6 +80,7 @@ function App() {
     saveReservationsState({ reservations, selectedReservationId, reservationLists });
     // keep backward compatibility for currentCategory to avoid breaking previous storage-based tests
     const lists = reservationLists[selectedReservationId] || DEFAULT_LISTS;
+    const currentCategory = currentSection;
     saveState({ lists, currentCategory });
   }, [reservations, selectedReservationId, reservationLists, currentSection]);
 
