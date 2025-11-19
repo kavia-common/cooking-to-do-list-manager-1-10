@@ -58,20 +58,30 @@ function App() {
       reservationsState.selectedReservationId &&
       reservationsState.reservationLists
     ) {
+      // Sanitize any lingering categories to exclude 'serve'
+      const sanitizedLists = {};
+      Object.keys(reservationsState.reservationLists).forEach(key => {
+        const bucket = reservationsState.reservationLists[key] || {};
+        sanitizedLists[key] = {
+          prep: Array.isArray(bucket.prep) ? bucket.prep : []
+        };
+      });
       setReservations(reservationsState.reservations);
       setSelectedReservationId(reservationsState.selectedReservationId);
-      setReservationLists(reservationsState.reservationLists);
+      setReservationLists(sanitizedLists);
     } else {
       // legacy single-list support
       const legacy = loadState();
       if (legacy && legacy.lists) {
-        setReservationLists({ default: legacy.lists });
+        // Only keep 'prep' to remove any 'serve' remnants
+        const onlyPrep = { prep: Array.isArray(legacy.lists.prep) ? legacy.lists.prep : [] };
+        setReservationLists({ default: onlyPrep });
       }
     }
-    // also restore last category if legacy stored
+    // also restore last category if legacy stored but default to 'prep'
     const legacy = loadState();
     if (legacy?.currentCategory) {
-      setCurrentSection(legacy.currentCategory);
+      setCurrentSection('prep');
     }
   }, []);
 
@@ -90,7 +100,12 @@ function App() {
     () => reservationLists[selectedReservationId] || DEFAULT_LISTS,
     [reservationLists, selectedReservationId]
   );
-  const tasks = useMemo(() => lists[currentCategory] || [], [lists, currentCategory]);
+  // Guard against stale currentCategory (e.g., 'serve') by falling back to 'prep'
+  const safeCategory = useMemo(() => {
+    if (lists[currentSection]) return currentSection;
+    return DEFAULT_CATEGORIES[0]?.id || 'prep';
+  }, [lists, currentSection]);
+  const tasks = useMemo(() => lists[safeCategory] || [], [lists, safeCategory]);
 
   // PUBLIC_INTERFACE
   const openAddModal = () => {
@@ -108,11 +123,12 @@ function App() {
     const newTask = createTask(payload.title, payload.notes, payload.priority);
     setReservationLists(prev => {
       const curr = prev[selectedReservationId] || DEFAULT_LISTS;
+      const target = lists[safeCategory] !== undefined ? safeCategory : DEFAULT_CATEGORIES[0].id;
       return {
         ...prev,
         [selectedReservationId]: {
           ...curr,
-          [currentCategory]: [newTask, ...(curr[currentCategory] || [])]
+          [target]: [newTask, ...(curr[target] || [])]
         }
       };
     });
@@ -123,11 +139,12 @@ function App() {
   const updateTask = (payload) => {
     setReservationLists(prev => {
       const curr = prev[selectedReservationId] || DEFAULT_LISTS;
+      const target = lists[safeCategory] !== undefined ? safeCategory : DEFAULT_CATEGORIES[0].id;
       return {
         ...prev,
         [selectedReservationId]: {
           ...curr,
-          [currentCategory]: curr[currentCategory].map(t =>
+          [target]: (curr[target] || []).map(t =>
             t.id === editingTask.id ? { ...t, ...payload } : t
           )
         }
@@ -150,11 +167,12 @@ function App() {
   const toggleDone = (id) => {
     setReservationLists(prev => {
       const curr = prev[selectedReservationId] || DEFAULT_LISTS;
+      const target = lists[safeCategory] !== undefined ? safeCategory : DEFAULT_CATEGORIES[0].id;
       return {
         ...prev,
         [selectedReservationId]: {
           ...curr,
-          [currentCategory]: curr[currentCategory].map(t =>
+          [target]: (curr[target] || []).map(t =>
             t.id === id ? { ...t, done: !t.done } : t
           )
         }
@@ -166,11 +184,12 @@ function App() {
   const deleteTask = (id) => {
     setReservationLists(prev => {
       const curr = prev[selectedReservationId] || DEFAULT_LISTS;
+      const target = lists[safeCategory] !== undefined ? safeCategory : DEFAULT_CATEGORIES[0].id;
       return {
         ...prev,
         [selectedReservationId]: {
           ...curr,
-          [currentCategory]: curr[currentCategory].filter(t => t.id !== id)
+          [target]: (curr[target] || []).filter(t => t.id !== id)
         }
       };
     });
@@ -186,11 +205,12 @@ function App() {
   const reorderTasks = (startIndex, endIndex) => {
     setReservationLists(prev => {
       const curr = prev[selectedReservationId] || DEFAULT_LISTS;
+      const target = lists[safeCategory] !== undefined ? safeCategory : DEFAULT_CATEGORIES[0].id;
       return {
         ...prev,
         [selectedReservationId]: {
           ...curr,
-          [currentCategory]: reorder(curr[currentCategory], startIndex, endIndex)
+          [target]: reorder(curr[target] || [], startIndex, endIndex)
         }
       };
     });
@@ -268,10 +288,10 @@ function App() {
             <section className="category-header card">
               <div className="category-title">
                 <span className="category-icon" aria-hidden>
-                  {DEFAULT_CATEGORIES.find(c => c.id === currentCategory)?.icon}
+                  {DEFAULT_CATEGORIES.find(c => c.id === safeCategory)?.icon}
                 </span>
                 <div>
-                  <h2>{DEFAULT_CATEGORIES.find(c => c.id === currentCategory)?.name}</h2>
+                  <h2>{DEFAULT_CATEGORIES.find(c => c.id === safeCategory)?.name}</h2>
                   <p className="muted">
                     {tasks.filter(t => !t.done).length} active • {tasks.length} total
                   </p>

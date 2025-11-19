@@ -26,7 +26,16 @@ export function loadReservationsState() {
       const migrated = {
         reservations: legacy.tables || [{ id: 'default', name: 'My Reservation' }],
         selectedReservationId: legacy.selectedTableId || 'default',
-        reservationLists: legacy.tableLists || { default: { prep: [], cook: [], serve: [] } },
+        // Ensure migrated structure contains only supported lists (no 'serve')
+        reservationLists: (() => {
+          const base = legacy.tableLists || { default: { prep: [] } };
+          const sanitized = {};
+          for (const key in base) {
+            const bucket = base[key] || {};
+            sanitized[key] = { prep: Array.isArray(bucket.prep) ? bucket.prep : [] };
+          }
+          return sanitized;
+        })(),
       };
       try {
         localStorage.setItem(RESERVATIONS_STORAGE_KEY, JSON.stringify(migrated));
