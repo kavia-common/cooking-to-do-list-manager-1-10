@@ -245,22 +245,8 @@ function App() {
       <div className="gradient-bg" />
       <Header />
 
-      {/* Quick reservations bar (mobile-friendly) */}
-      <div className="reservations-strip">
-        <div className="reservations-toolbar">
-          {reservations.map(r => (
-            <button
-              key={r.id}
-              className={['reservations-chip', r.id === selectedReservationId ? 'active' : ''].join(' ')}
-              onClick={() => handleSelectReservation(r.id)}
-              type="button"
-              title={`Switch to ${r.name}`}
-            >
-              {r.name}
-            </button>
-          ))}
-        </div>
-      </div>
+      {/* Reservation quick bar removed to simplify right panel */}
+      {/* (Previously rendered reservations-strip with selectable chips) */}
 
       <div className="content">
         {/* Unified sidebar: navigation + reservations */}
@@ -295,9 +281,7 @@ function App() {
                     <p className="muted">
                       {tasks.filter(t => !t.done).length} active • {tasks.length} total
                     </p>
-                    <p className="muted" style={{ marginTop: 6 }}>
-                      Reservation: <strong>{(reservations.find(r => r.id === selectedReservationId) || {}).name}</strong>
-                    </p>
+                    {/* Reservation context removed */}
                   </div>
                 </div>
                 <div className="category-actions">
