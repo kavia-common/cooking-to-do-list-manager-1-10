@@ -86,9 +86,82 @@ a{color:inherit}
   padding: 0 16px 64px;
 }
 
+/* Sidebar (left drawer) */
+.sidebar{
+  width:260px;
+  flex:0 0 260px;
+  align-self:flex-start;
+  position:sticky;
+  top:76px; /* below header */
+  border-radius:16px;
+  overflow:hidden;
+}
+
+.sidebar-header{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:14px 14px 12px 14px;
+  border-bottom:1px solid var(--color-border);
+  background: linear-gradient(135deg, rgba(37,99,235,0.04), rgba(245,158,11,0.04));
+}
+.sidebar-icon{
+  width:36px;height:36px;border-radius:12px;
+  display:inline-grid;place-items:center;
+  background:linear-gradient(135deg, rgba(37,99,235,0.10), rgba(245,158,11,0.10));
+}
+.sidebar-title h3{ margin:0 0 2px 0; font-size:16px; }
+.sidebar-title .muted{ margin:0; color:var(--color-muted); font-size:12px; }
+
+.sidebar-nav{
+  display:flex; flex-direction:column;
+  gap:6px;
+  padding:10px;
+}
+.nav-item{
+  display:flex; align-items:center; gap:10px;
+  width:100%;
+  border:1px solid var(--color-border);
+  background:var(--color-surface);
+  padding:10px 12px;
+  border-radius:12px;
+  cursor:pointer;
+  text-align:left;
+  transition: transform .12s ease, background-color .2s ease, border-color .2s ease, box-shadow .2s ease;
+  box-shadow: 0 4px 10px var(--shadow-color);
+}
+.nav-item:hover{ transform: translateY(-1px); }
+.nav-item.active{
+  border-color: transparent;
+  background: linear-gradient(135deg, #2563EB, #1D4ED8);
+  color:#fff;
+  box-shadow: 0 10px 22px rgba(37,99,235,0.28);
+}
+.nav-emoji{ width:22px; display:inline-flex; justify-content:center; }
+.nav-text{ flex:1; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.nav-label{ font-weight:600; }
+.nav-badge{
+  display:inline-flex; align-items:center; justify-content:center;
+  min-width:22px; height:22px; padding:0 6px;
+  border-radius:999px;
+  font-size:12px;
+  background: rgba(17,24,39,0.06);
+  color: var(--color-text);
+}
+.nav-item.active .nav-badge{
+  background: rgba(255,255,255,0.22);
+  color:#fff;
+}
+
 .main{
   flex:1;
   min-width:0;
+}
+
+/* Responsive: stack sidebar on top for narrow screens */
+@media (max-width: 860px){
+  .content{ flex-direction:column; }
+  .sidebar{ position:relative; top:auto; width:100%; flex:1 1 auto; }
 }
 
 /* Cards */

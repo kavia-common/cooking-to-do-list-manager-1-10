@@ -5,22 +5,34 @@ import Header from './components/Header';
 import TaskList from './components/TaskList';
 import TaskFormModal from './components/TaskFormModal';
 import FAB from './components/FAB';
+import Sidebar from './components/Sidebar';
 import { Theme, setCSSVariables } from './theme';
 import { createTask, reorder } from './utils/types';
 import { loadState, saveState } from './utils/storage';
+
+// Define recipe sections for navigation
+const RECIPE_SECTIONS = [
+  { key: 'all', label: 'All Items', icon: '📋' },
+  { key: 'ingredients', label: 'Ingredients', icon: '🧺' },
+  { key: 'prep', label: 'Prep', icon: '🔪' },
+  { key: 'cooking', label: 'Cooking', icon: '🍳' },
+  { key: 'serving', label: 'Serving', icon: '🍽️' },
+];
 
 // PUBLIC_INTERFACE
 function App() {
   /**
    * App state:
    * - themeMode
-   * - single list of tasks
+   * - tasks list
+   * - selected recipe section
    * - task modal + edit
    */
   const [themeMode] = useState('light');
   const [modalOpen, setModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
   const [tasksState, setTasksState] = useState([]);
+  const [section, setSection] = useState('all');
 
   // Apply theme on mount
   useEffect(() => {
@@ -48,8 +60,6 @@ function App() {
     saveState({ lists: { list: tasksState } });
   }, [tasksState]);
 
-  const tasks = useMemo(() => tasksState, [tasksState]);
-
   // PUBLIC_INTERFACE
   const openAddModal = () => {
     setEditingTask(null);
@@ -58,7 +68,9 @@ function App() {
 
   // PUBLIC_INTERFACE
   const addTask = (payload) => {
+    // Persist the selected section inside the task for filtering
     const newTask = createTask(payload.title, payload.notes, payload.priority);
+    newTask.section = section === 'all' ? 'ingredients' : section; // default into a real bucket if 'all'
     setTasksState(prev => [newTask, ...prev]);
     setModalOpen(false);
   };
@@ -102,6 +114,31 @@ function App() {
     setTasksState(prev => reorder(prev, startIndex, endIndex));
   };
 
+  // Derive filtered tasks for current section
+  const tasks = useMemo(() => {
+    if (section === 'all') return tasksState;
+    return tasksState.filter(t => (t.section || 'ingredients') === section);
+  }, [tasksState, section]);
+
+  // Compute counts for sidebar badges
+  const categoriesWithCounts = useMemo(() => {
+    return RECIPE_SECTIONS.map(s => {
+      const count = s.key === 'all'
+        ? tasksState.length
+        : tasksState.filter(t => (t.section || 'ingredients') === s.key).length;
+      return { ...s, count };
+    });
+  }, [tasksState]);
+
+  // PUBLIC_INTERFACE
+  const navigateToSection = (key) => {
+    setSection(key);
+  };
+
+  const activeCount = tasks.filter(t => !t.done).length;
+
+  const activeLabel = RECIPE_SECTIONS.find(s => s.key === section)?.label || 'Recipes';
+
   return (
     <div className="ocean-app" data-theme={themeMode}>
       {/* Subtle gradient header background */}
@@ -109,16 +146,22 @@ function App() {
       <Header />
 
       <div className="content">
+        <Sidebar
+          categories={categoriesWithCounts}
+          current={section}
+          onSelect={navigateToSection}
+        />
+
         <main className="main">
           <>
             {/* Header for current list context and quick add */}
-            <section className="category-header card">
+            <section className="category-header card box-header">
               <div className="category-title">
                 <span className="category-icon" aria-hidden>📋</span>
                 <div>
-                  <h2>Recipes</h2>
+                  <h2>{activeLabel}</h2>
                   <p className="muted">
-                    {tasks.filter(t => !t.done).length} active • {tasks.length} total
+                    {activeCount} active • {tasks.length} total
                   </p>
                 </div>
               </div>
@@ -127,7 +170,7 @@ function App() {
               </div>
             </section>
 
-            {/* Single list view with DnD support */}
+            {/* Filtered list view with DnD support */}
             <section className="card box-list">
               <TaskList
                 tasks={tasks}
