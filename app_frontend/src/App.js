@@ -9,7 +9,6 @@ import Sidebar from './components/Sidebar';
 import { Theme, setCSSVariables } from './theme';
 import { createTask, reorder } from './utils/types';
 import { loadState, saveState } from './utils/storage';
-import { getInitialIngredients, getRequestedSampleIngredients } from './utils/sampleData';
 
 /**
  * Define recipe sections for navigation (removed "All Items" and removed "serving")
@@ -53,7 +52,7 @@ function App() {
     document.title = 'ChefMaster';
   }, []);
 
-  // Initialize from storage (single list). If none found, seed with sample Ingredients.
+  // Initialize from storage (single list). If none found, start empty (no sample data).
   useEffect(() => {
     const legacy = loadState();
     if (legacy && legacy.lists) {
@@ -67,13 +66,10 @@ function App() {
       const sanitized = combined.filter(t => t.section !== 'serving');
       setTasksState(sanitized);
     } else {
-      // No prior data: provide initial demo ingredients + requested sample ingredients
-      const demo = getInitialIngredients();
-      const requested = getRequestedSampleIngredients();
-      const combined = [...requested, ...demo];
-      setTasksState(combined);
+      // No prior data: do not auto-populate with any sample ingredients
+      setTasksState([]);
       // persist immediately so refresh keeps state
-      saveState({ lists: { list: combined } });
+      saveState({ lists: { list: [] } });
     }
   }, []);
 
