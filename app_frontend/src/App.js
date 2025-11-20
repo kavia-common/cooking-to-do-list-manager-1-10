@@ -116,7 +116,7 @@ function App() {
               <div className="category-title">
                 <span className="category-icon" aria-hidden>📋</span>
                 <div>
-                  <h2>My List</h2>
+                  <h2>Recipes</h2>
                   <p className="muted">
                     {tasks.filter(t => !t.done).length} active • {tasks.length} total
                   </p>
