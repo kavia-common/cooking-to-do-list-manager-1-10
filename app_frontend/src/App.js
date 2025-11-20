@@ -10,14 +10,21 @@ import { Theme, setCSSVariables } from './theme';
 import { createTask, reorder } from './utils/types';
 import { loadState, saveState } from './utils/storage';
 
-// Define recipe sections for navigation
+// Define recipe sections for navigation (removed "All Items")
 const RECIPE_SECTIONS = [
-  { key: 'all', label: 'All Items', icon: '📋' },
   { key: 'ingredients', label: 'Ingredients', icon: '🧺' },
   { key: 'prep', label: 'Prep', icon: '🔪' },
   { key: 'cooking', label: 'Cooking', icon: '🍳' },
   { key: 'serving', label: 'Serving', icon: '🍽️' },
 ];
+
+// Map for header icon per section
+const SECTION_ICON = {
+  ingredients: '🧺',
+  prep: '🔪',
+  cooking: '🍳',
+  serving: '🍽️',
+};
 
 // PUBLIC_INTERFACE
 function App() {
@@ -32,7 +39,8 @@ function App() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
   const [tasksState, setTasksState] = useState([]);
-  const [section, setSection] = useState('all');
+  // Set default section to a specific category (no "all")
+  const [section, setSection] = useState('ingredients');
 
   // Apply theme on mount
   useEffect(() => {
@@ -70,7 +78,8 @@ function App() {
   const addTask = (payload) => {
     // Persist the selected section inside the task for filtering
     const newTask = createTask(payload.title, payload.notes, payload.priority);
-    newTask.section = section === 'all' ? 'ingredients' : section; // default into a real bucket if 'all'
+    // Always use a real category (no 'all')
+    newTask.section = section || 'ingredients';
     setTasksState(prev => [newTask, ...prev]);
     setModalOpen(false);
   };
@@ -114,18 +123,15 @@ function App() {
     setTasksState(prev => reorder(prev, startIndex, endIndex));
   };
 
-  // Derive filtered tasks for current section
+  // Derive filtered tasks for current section (no "all")
   const tasks = useMemo(() => {
-    if (section === 'all') return tasksState;
     return tasksState.filter(t => (t.section || 'ingredients') === section);
   }, [tasksState, section]);
 
-  // Compute counts for sidebar badges
+  // Compute counts for sidebar badges (no "all")
   const categoriesWithCounts = useMemo(() => {
     return RECIPE_SECTIONS.map(s => {
-      const count = s.key === 'all'
-        ? tasksState.length
-        : tasksState.filter(t => (t.section || 'ingredients') === s.key).length;
+      const count = tasksState.filter(t => (t.section || 'ingredients') === s.key).length;
       return { ...s, count };
     });
   }, [tasksState]);
@@ -137,7 +143,9 @@ function App() {
 
   const activeCount = tasks.filter(t => !t.done).length;
 
-  const activeLabel = RECIPE_SECTIONS.find(s => s.key === section)?.label || 'Recipes';
+  const activeMeta = RECIPE_SECTIONS.find(s => s.key === section);
+  const activeLabel = activeMeta?.label || 'Recipes';
+  const activeIcon = SECTION_ICON[section] || '📋';
 
   return (
     <div className="ocean-app" data-theme={themeMode}>
@@ -157,7 +165,7 @@ function App() {
             {/* Header for current list context and quick add */}
             <section className="category-header card box-header">
               <div className="category-title">
-                <span className="category-icon" aria-hidden>📋</span>
+                <span className="category-icon" aria-hidden>{activeIcon}</span>
                 <div>
                   <h2>{activeLabel}</h2>
                   <p className="muted">
