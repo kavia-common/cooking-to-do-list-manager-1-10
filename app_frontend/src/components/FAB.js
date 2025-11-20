@@ -6,7 +6,7 @@ import React from 'react';
  */
 export default function FAB({ onClick }) {
   return (
-    <button className="fab" onClick={onClick} aria-label="Add task" title="Add task">
+    <button className="fab" onClick={onClick} aria-label="Add item" title="Add item">
       +
     </button>
   );

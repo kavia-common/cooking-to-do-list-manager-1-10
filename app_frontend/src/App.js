@@ -263,14 +263,14 @@ function App() {
               <div className="category-title">
                 <span className="category-icon" aria-hidden>📋</span>
                 <div>
-                  <h2>Tasks</h2>
+                  <h2>My List</h2>
                   <p className="muted">
                     {tasks.filter(t => !t.done).length} active • {tasks.length} total
                   </p>
                 </div>
               </div>
               <div className="category-actions">
-                <button className="btn primary" onClick={openAddModal}>Add Task</button>
+                <button className="btn primary" onClick={openAddModal}>Add Item</button>
               </div>
             </section>
 
