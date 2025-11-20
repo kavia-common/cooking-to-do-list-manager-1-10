@@ -9,7 +9,7 @@ export default function Sidebar({ categories, current, onSelect }) {
   return (
     <aside className="sidebar card" aria-label="Recipe sections">
       <div className="sidebar-header">
-        <span className="sidebar-icon" aria-hidden>🍽️</span>
+        <span className="sidebar-icon" aria-hidden>👨‍🍳</span>
         <div className="sidebar-title">
           <h3>Recipe Sections</h3>
           <p className="muted">Navigate your lists</p>

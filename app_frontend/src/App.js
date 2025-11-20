@@ -10,12 +10,11 @@ import { Theme, setCSSVariables } from './theme';
 import { createTask, reorder } from './utils/types';
 import { loadState, saveState } from './utils/storage';
 
-// Define recipe sections for navigation (removed "All Items")
+// Define recipe sections for navigation (removed "All Items" and removed "serving")
 const RECIPE_SECTIONS = [
   { key: 'ingredients', label: 'Ingredients', icon: '🧺' },
   { key: 'prep', label: 'Prep', icon: '🔪' },
   { key: 'cooking', label: 'Cooking', icon: '🍳' },
-  { key: 'serving', label: 'Serving', icon: '🍽️' },
 ];
 
 // Map for header icon per section
@@ -23,7 +22,6 @@ const SECTION_ICON = {
   ingredients: '🧺',
   prep: '🔪',
   cooking: '🍳',
-  serving: '🍽️',
 };
 
 // PUBLIC_INTERFACE
@@ -56,10 +54,12 @@ function App() {
       const combined = [
         ...(Array.isArray(legacy.lists.prep) ? legacy.lists.prep : []),
         ...(Array.isArray(legacy.lists.cook) ? legacy.lists.cook : []),
-        ...(Array.isArray(legacy.lists.serve) ? legacy.lists.serve : []),
+        // intentionally omitting legacy.lists.serve since "serving" is no longer supported
         ...(Array.isArray(legacy.lists.list) ? legacy.lists.list : []),
       ];
-      setTasksState(combined);
+      // Strip any lingering 'serving' tasks from legacy data
+      const sanitized = combined.filter(t => t.section !== 'serving');
+      setTasksState(sanitized);
     }
   }, []);
 
@@ -78,7 +78,7 @@ function App() {
   const addTask = (payload) => {
     // Persist the selected section inside the task for filtering
     const newTask = createTask(payload.title, payload.notes, payload.priority);
-    // Always use a real category (no 'all')
+    // Always use a real category (and never 'serving' which no longer exists)
     newTask.section = section || 'ingredients';
     setTasksState(prev => [newTask, ...prev]);
     setModalOpen(false);
@@ -86,8 +86,13 @@ function App() {
 
   // PUBLIC_INTERFACE
   const updateTask = (payload) => {
+    // Ensure section cannot be changed to 'serving' via editing payloads
+    const sanitizedPayload = { ...payload };
+    if (sanitizedPayload.section === 'serving') {
+      delete sanitizedPayload.section;
+    }
     setTasksState(prev =>
-      prev.map(t => (t.id === editingTask.id ? { ...t, ...payload } : t))
+      prev.map(t => (t.id === editingTask.id ? { ...t, ...sanitizedPayload } : t))
     );
     setEditingTask(null);
     setModalOpen(false);
@@ -114,6 +119,8 @@ function App() {
 
   // PUBLIC_INTERFACE
   const editTask = (task) => {
+    // prevent editing tasks that might still have a 'serving' section from old data
+    if (task.section === 'serving') return;
     setEditingTask(task);
     setModalOpen(true);
   };
@@ -123,15 +130,19 @@ function App() {
     setTasksState(prev => reorder(prev, startIndex, endIndex));
   };
 
-  // Derive filtered tasks for current section (no "all")
+  // Derive filtered tasks for current section (no "all" and exclude 'serving')
   const tasks = useMemo(() => {
-    return tasksState.filter(t => (t.section || 'ingredients') === section);
+    return tasksState
+      .filter(t => t.section !== 'serving')
+      .filter(t => (t.section || 'ingredients') === section);
   }, [tasksState, section]);
 
-  // Compute counts for sidebar badges (no "all")
+  // Compute counts for sidebar badges (exclude 'serving')
   const categoriesWithCounts = useMemo(() => {
     return RECIPE_SECTIONS.map(s => {
-      const count = tasksState.filter(t => (t.section || 'ingredients') === s.key).length;
+      const count = tasksState
+        .filter(t => t.section !== 'serving')
+        .filter(t => (t.section || 'ingredients') === s.key).length;
       return { ...s, count };
     });
   }, [tasksState]);

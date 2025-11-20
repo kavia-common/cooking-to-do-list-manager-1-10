@@ -1,13 +1,12 @@
-export const DEFAULT_CATEGORIES = [
-  // No categories available after removing "Prep"
-];
-
-export const DEFAULT_LISTS = {
-  // No category buckets remain; keep as empty object for robustness
-};
+export const DEFAULT_CATEGORIES = [];
+export const DEFAULT_LISTS = {};
 
 // PUBLIC_INTERFACE
 export function createTask(title, notes = '', priority = 'medium') {
+  /**
+   * Creates a new task object without any category baked in.
+   * Section assignment is handled in App.js and excludes 'serving'.
+   */
   return {
     id: `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
     title,
