@@ -9,7 +9,7 @@ import Sidebar from './components/Sidebar';
 import { Theme, setCSSVariables } from './theme';
 import { createTask, reorder } from './utils/types';
 import { loadState, saveState } from './utils/storage';
-import { getInitialIngredients } from './utils/sampleData';
+import { getInitialIngredients, getRequestedSampleIngredients } from './utils/sampleData';
 
 /**
  * Define recipe sections for navigation (removed "All Items" and removed "serving")
@@ -67,11 +67,13 @@ function App() {
       const sanitized = combined.filter(t => t.section !== 'serving');
       setTasksState(sanitized);
     } else {
-      // No prior data: provide initial demo ingredients
+      // No prior data: provide initial demo ingredients + requested sample ingredients
       const demo = getInitialIngredients();
-      setTasksState(demo);
+      const requested = getRequestedSampleIngredients();
+      const combined = [...requested, ...demo];
+      setTasksState(combined);
       // persist immediately so refresh keeps state
-      saveState({ lists: { list: demo } });
+      saveState({ lists: { list: combined } });
     }
   }, []);
 

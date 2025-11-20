@@ -1,3 +1,4 @@
+```javascript
 //
 // Sample data utilities for demo/testing without backend connectivity
 //
@@ -44,3 +45,42 @@ export function getInitialIngredients() {
     return task;
   });
 }
+
+/**
+ * PUBLIC_INTERFACE
+ * getRequestedSampleIngredients
+ * Returns the exact set of sample ingredients requested in the task:
+ * Eggs, Flour, Milk, Butter, Salt, Sugar, Chicken Breast, and Olive Oil.
+ * Each is created as a task in the 'ingredients' section.
+ */
+export function getRequestedSampleIngredients() {
+  const names = [
+    'Eggs',
+    'Flour',
+    'Milk',
+    'Butter',
+    'Salt',
+    'Sugar',
+    'Chicken Breast',
+    'Olive Oil',
+  ];
+
+  const notesMap = {
+    Eggs: '6 large',
+    Flour: 'All-purpose, 2 cups',
+    Milk: 'Whole, 1 cup',
+    Butter: 'Unsalted, 4 tbsp',
+    Salt: 'Pinch to taste',
+    Sugar: 'Granulated, 3 tbsp',
+    'Chicken Breast': '2 pieces, boneless',
+    'Olive Oil': 'Extra virgin, 2 tbsp',
+  };
+
+  return names.map((title, idx) => {
+    const priority = idx % 3 === 0 ? 'high' : (idx % 3 === 1 ? 'medium' : 'low');
+    const task = createTask(title, notesMap[title] || '', priority);
+    task.section = 'ingredients';
+    return task;
+  });
+}
+``` 
