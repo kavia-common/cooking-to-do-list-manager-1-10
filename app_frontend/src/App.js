@@ -43,7 +43,7 @@ function App() {
   useEffect(() => {
     setCSSVariables();
     document.body.style.background = Theme.colors.background;
-    document.title = 'chef master';
+    document.title = 'cheftito';
   }, []);
 
   // Migrate legacy storage and initialize reservations
