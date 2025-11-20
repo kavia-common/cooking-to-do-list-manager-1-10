@@ -10,11 +10,15 @@ import { Theme, setCSSVariables } from './theme';
 import { createTask, reorder } from './utils/types';
 import { loadState, saveState } from './utils/storage';
 
-// Define recipe sections for navigation (removed "All Items" and removed "serving")
+/**
+ * Define recipe sections for navigation (removed "All Items" and removed "serving")
+ * Added new "Providers" section so users can access provider-related recipe options.
+ */
 const RECIPE_SECTIONS = [
   { key: 'ingredients', label: 'Ingredients', icon: '🧺' },
   { key: 'prep', label: 'Prep', icon: '🔪' },
   { key: 'cooking', label: 'Cooking', icon: '🍳' },
+  { key: 'providers', label: 'Providers', icon: '🏷️' },
 ];
 
 // Map for header icon per section
@@ -22,6 +26,7 @@ const SECTION_ICON = {
   ingredients: '🧺',
   prep: '🔪',
   cooking: '🍳',
+  providers: '🏷️',
 };
 
 // PUBLIC_INTERFACE

@@ -16,7 +16,7 @@ export default function Sidebar({ categories, current, onSelect }) {
         </div>
       </div>
 
-      <nav className="sidebar-nav" aria-label="Sidebar navigation">
+      <nav className="sidebar-nav" aria-label="Recipe sections navigation">
         {categories.map((cat) => {
           const active = current === cat.key;
           return (
