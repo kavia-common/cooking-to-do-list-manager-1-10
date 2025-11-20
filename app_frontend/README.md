@@ -2,8 +2,6 @@
 
 This project provides a minimal React template with a clean, modern UI and minimal dependencies.
 
-Note: The domain term "Tables" was refactored to "Reservations". Any previous localStorage data will be migrated automatically on first load.
-
 ## Features
 
 - **Lightweight**: No heavy UI frameworks - uses only vanilla CSS and React
@@ -34,7 +32,6 @@ It correctly bundles React in production mode and optimizes the build for the be
 ### Colors
 
 The main brand colors are defined as CSS variables in `src/App.css`:
-
 ```css
 :root {
   --kavia-orange: #E87A41;
