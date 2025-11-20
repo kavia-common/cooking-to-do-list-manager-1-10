@@ -5,9 +5,8 @@ import Header from './components/Header';
 import TaskList from './components/TaskList';
 import TaskFormModal from './components/TaskFormModal';
 import FAB from './components/FAB';
-import CategoryBoard from './components/CategoryBoard';
 import { Theme, setCSSVariables } from './theme';
-import { DEFAULT_CATEGORIES, DEFAULT_LISTS, createTask, reorder } from './utils/types';
+import { DEFAULT_LISTS, createTask, reorder } from './utils/types';
 import { loadReservationsState, saveReservationsState } from './utils/tablesStorage';
 import { loadState, saveState } from './utils/storage';
 
@@ -25,19 +24,17 @@ function App() {
    * App state:
    * - themeMode
    * - drawer open/close
-   * - currentSection: category id
    * - reservations: [{id, name}]
    * - selectedReservationId: string
-   * - reservationLists: {[reservationId]: {prep:[], serve:[]}}
+   * - reservationLists: {[reservationId]: {}}
    * - task modal + edit
    */
   const [themeMode] = useState('light');
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [currentSection, setCurrentSection] = useState(DEFAULT_CATEGORIES[0].id);
 
   const [reservations, setReservations] = useState([{ id: 'default', name: 'My Reservation' }]);
   const [selectedReservationId, setSelectedReservationId] = useState('default');
-  const [reservationLists, setReservationLists] = useState({ default: DEFAULT_LISTS });
+  const [reservationLists, setReservationLists] = useState({ default: {} });
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
@@ -58,54 +55,60 @@ function App() {
       reservationsState.selectedReservationId &&
       reservationsState.reservationLists
     ) {
-      // Sanitize any lingering categories to exclude 'serve'
-      const sanitizedLists = {};
+      // Remove any lingering categories and flatten into a single uncategorized list
+      const flattened = {};
+      const newReservationLists = {};
       Object.keys(reservationsState.reservationLists).forEach(key => {
         const bucket = reservationsState.reservationLists[key] || {};
-        sanitizedLists[key] = {
-          prep: Array.isArray(bucket.prep) ? bucket.prep : []
-        };
+        // Combine any existing arrays into one unified list
+        const combined = [
+          ...(Array.isArray(bucket.prep) ? bucket.prep : []),
+          ...(Array.isArray(bucket.cook) ? bucket.cook : []),
+          ...(Array.isArray(bucket.serve) ? bucket.serve : []),
+        ];
+        flattened[key] = combined;
+        newReservationLists[key] = {}; // keep empty object; tasks are tracked outside per-reservation bucket for UI
       });
       setReservations(reservationsState.reservations);
       setSelectedReservationId(reservationsState.selectedReservationId);
-      setReservationLists(sanitizedLists);
+      // Keep per-reservation container but we will track tasks in a single list state derived below
+      setReservationLists(newReservationLists);
+      // Persist a legacy-compatible state (single list) in local storage
+      const legacyLists = { list: flattened[reservationsState.selectedReservationId] || [] };
+      saveState({ lists: legacyLists, currentCategory: undefined });
+      // Store temp flattened tasks into a dedicated memory state
+      setPerReservationTasks(flattened);
     } else {
-      // legacy single-list support
       const legacy = loadState();
       if (legacy && legacy.lists) {
-        // Only keep 'prep' to remove any 'serve' remnants
-        const onlyPrep = { prep: Array.isArray(legacy.lists.prep) ? legacy.lists.prep : [] };
-        setReservationLists({ default: onlyPrep });
+        const combined = [
+          ...(Array.isArray(legacy.lists.prep) ? legacy.lists.prep : []),
+          ...(Array.isArray(legacy.lists.cook) ? legacy.lists.cook : []),
+          ...(Array.isArray(legacy.lists.serve) ? legacy.lists.serve : []),
+          ...(Array.isArray(legacy.lists.list) ? legacy.lists.list : []),
+        ];
+        setPerReservationTasks({ default: combined });
       }
     }
-    // also restore last category if legacy stored but default to 'prep'
-    const legacy = loadState();
-    if (legacy?.currentCategory) {
-      setCurrentSection('prep');
-    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Maintain a flat task list per reservation without categories
+  const [perReservationTasks, setPerReservationTasks] = useState({ default: [] });
 
   // Persist reservations state
   useEffect(() => {
+    // Persist reservations shell
     saveReservationsState({ reservations, selectedReservationId, reservationLists });
-    // keep backward compatibility for currentCategory to avoid breaking previous storage-based tests
-    const lists = reservationLists[selectedReservationId] || DEFAULT_LISTS;
-    const currentCategory = currentSection;
-    saveState({ lists, currentCategory });
-  }, [reservations, selectedReservationId, reservationLists, currentSection]);
+    // Backward compatible save of tasks in a single list
+    const tasks = perReservationTasks[selectedReservationId] || [];
+    saveState({ lists: { list: tasks } });
+  }, [reservations, selectedReservationId, reservationLists, perReservationTasks]);
 
-  const currentCategory = currentSection;
-
-  const lists = useMemo(
-    () => reservationLists[selectedReservationId] || DEFAULT_LISTS,
-    [reservationLists, selectedReservationId]
+  const tasks = useMemo(
+    () => perReservationTasks[selectedReservationId] || [],
+    [perReservationTasks, selectedReservationId]
   );
-  // Guard against stale currentCategory (e.g., 'serve') by falling back to 'prep'
-  const safeCategory = useMemo(() => {
-    if (lists[currentSection]) return currentSection;
-    return DEFAULT_CATEGORIES[0]?.id || 'prep';
-  }, [lists, currentSection]);
-  const tasks = useMemo(() => lists[safeCategory] || [], [lists, safeCategory]);
 
   // PUBLIC_INTERFACE
   const openAddModal = () => {
@@ -114,40 +117,24 @@ function App() {
   };
 
   // PUBLIC_INTERFACE
-  const onSelectSection = (id) => {
-    setCurrentSection(id);
-  };
-
-  // PUBLIC_INTERFACE
   const addTask = (payload) => {
     const newTask = createTask(payload.title, payload.notes, payload.priority);
-    setReservationLists(prev => {
-      const curr = prev[selectedReservationId] || DEFAULT_LISTS;
-      const target = lists[safeCategory] !== undefined ? safeCategory : DEFAULT_CATEGORIES[0].id;
-      return {
-        ...prev,
-        [selectedReservationId]: {
-          ...curr,
-          [target]: [newTask, ...(curr[target] || [])]
-        }
-      };
+    setPerReservationTasks(prev => {
+      const curr = prev[selectedReservationId] || [];
+      return { ...prev, [selectedReservationId]: [newTask, ...curr] };
     });
     setModalOpen(false);
   };
 
   // PUBLIC_INTERFACE
   const updateTask = (payload) => {
-    setReservationLists(prev => {
-      const curr = prev[selectedReservationId] || DEFAULT_LISTS;
-      const target = lists[safeCategory] !== undefined ? safeCategory : DEFAULT_CATEGORIES[0].id;
+    setPerReservationTasks(prev => {
+      const curr = prev[selectedReservationId] || [];
       return {
         ...prev,
-        [selectedReservationId]: {
-          ...curr,
-          [target]: (curr[target] || []).map(t =>
-            t.id === editingTask.id ? { ...t, ...payload } : t
-          )
-        }
+        [selectedReservationId]: curr.map(t =>
+          t.id === editingTask.id ? { ...t, ...payload } : t
+        )
       };
     });
     setEditingTask(null);
@@ -165,32 +152,22 @@ function App() {
 
   // PUBLIC_INTERFACE
   const toggleDone = (id) => {
-    setReservationLists(prev => {
-      const curr = prev[selectedReservationId] || DEFAULT_LISTS;
-      const target = lists[safeCategory] !== undefined ? safeCategory : DEFAULT_CATEGORIES[0].id;
+    setPerReservationTasks(prev => {
+      const curr = prev[selectedReservationId] || [];
       return {
         ...prev,
-        [selectedReservationId]: {
-          ...curr,
-          [target]: (curr[target] || []).map(t =>
-            t.id === id ? { ...t, done: !t.done } : t
-          )
-        }
+        [selectedReservationId]: curr.map(t => (t.id === id ? { ...t, done: !t.done } : t))
       };
     });
   };
 
   // PUBLIC_INTERFACE
   const deleteTask = (id) => {
-    setReservationLists(prev => {
-      const curr = prev[selectedReservationId] || DEFAULT_LISTS;
-      const target = lists[safeCategory] !== undefined ? safeCategory : DEFAULT_CATEGORIES[0].id;
+    setPerReservationTasks(prev => {
+      const curr = prev[selectedReservationId] || [];
       return {
         ...prev,
-        [selectedReservationId]: {
-          ...curr,
-          [target]: (curr[target] || []).filter(t => t.id !== id)
-        }
+        [selectedReservationId]: curr.filter(t => t.id !== id)
       };
     });
   };
@@ -203,15 +180,11 @@ function App() {
 
   // PUBLIC_INTERFACE
   const reorderTasks = (startIndex, endIndex) => {
-    setReservationLists(prev => {
-      const curr = prev[selectedReservationId] || DEFAULT_LISTS;
-      const target = lists[safeCategory] !== undefined ? safeCategory : DEFAULT_CATEGORIES[0].id;
+    setPerReservationTasks(prev => {
+      const curr = prev[selectedReservationId] || [];
       return {
         ...prev,
-        [selectedReservationId]: {
-          ...curr,
-          [target]: reorder(curr[target] || [], startIndex, endIndex)
-        }
+        [selectedReservationId]: reorder(curr, startIndex, endIndex)
       };
     });
   };
@@ -221,7 +194,8 @@ function App() {
   const handleCreateReservation = (name) => {
     const r = createReservation(name);
     setReservations(prev => [r, ...prev]);
-    setReservationLists(prev => ({ ...prev, [r.id]: { ...DEFAULT_LISTS } }));
+    setReservationLists(prev => ({ ...prev, [r.id]: {} }));
+    setPerReservationTasks(prev => ({ ...prev, [r.id]: [] }));
     setSelectedReservationId(r.id);
   };
 
@@ -241,9 +215,14 @@ function App() {
         const fallback = nextReservations[0]?.id;
         if (fallback) setSelectedReservationId(fallback);
       }
-      // also remove lists bucket
+      // also remove lists bucket and tasks
       setReservationLists(prevLists => {
         const n = { ...prevLists };
+        delete n[id];
+        return n;
+      });
+      setPerReservationTasks(prevTasks => {
+        const n = { ...prevTasks };
         delete n[id];
         return n;
       });
@@ -262,16 +241,11 @@ function App() {
       <div className="gradient-bg" />
       <Header />
 
-      {/* Reservation quick bar removed to simplify right panel */}
-      {/* (Previously rendered reservations-strip with selectable chips) */}
-
       <div className="content">
-        {/* Unified sidebar: navigation + reservations */}
+        {/* Unified sidebar: reservations only (no categories) */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <UnifiedSidebar
             open={drawerOpen}
-            current={currentSection}
-            onSelectSection={onSelectSection}
             reservations={reservations}
             selectedReservationId={selectedReservationId}
             onSelectReservation={handleSelectReservation}
@@ -284,70 +258,32 @@ function App() {
 
         <main className="main">
           <>
-            {/* Top header remains to show reservation context and quick add to current category */}
+            {/* Header for current reservation context and quick add */}
             <section className="category-header card">
               <div className="category-title">
-                <span className="category-icon" aria-hidden>
-                  {DEFAULT_CATEGORIES.find(c => c.id === safeCategory)?.icon}
-                </span>
+                <span className="category-icon" aria-hidden>📋</span>
                 <div>
-                  <h2>{DEFAULT_CATEGORIES.find(c => c.id === safeCategory)?.name}</h2>
+                  <h2>Tasks</h2>
                   <p className="muted">
                     {tasks.filter(t => !t.done).length} active • {tasks.length} total
                   </p>
                 </div>
               </div>
               <div className="category-actions">
-                {/* Add task button adds to currentCategory to keep UX simple */}
                 <button className="btn primary" onClick={openAddModal}>Add Task</button>
               </div>
             </section>
 
-            {/* Render all categories as distinct boxes with DnD support */}
-            <CategoryBoard
-              lists={lists}
-              onReorder={(catId, start, end) => {
-                setReservationLists(prev => {
-                  const curr = prev[selectedReservationId] || DEFAULT_LISTS;
-                  return {
-                    ...prev,
-                    [selectedReservationId]: {
-                      ...curr,
-                      [catId]: reorder(curr[catId] || [], start, end)
-                    }
-                  };
-                });
-              }}
-              onToggleDone={(catId, taskId) => {
-                setReservationLists(prev => {
-                  const curr = prev[selectedReservationId] || DEFAULT_LISTS;
-                  return {
-                    ...prev,
-                    [selectedReservationId]: {
-                      ...curr,
-                      [catId]: (curr[catId] || []).map(t => t.id === taskId ? { ...t, done: !t.done } : t)
-                    }
-                  };
-                });
-              }}
-              onDelete={(catId, taskId) => {
-                setReservationLists(prev => {
-                  const curr = prev[selectedReservationId] || DEFAULT_LISTS;
-                  return {
-                    ...prev,
-                    [selectedReservationId]: {
-                      ...curr,
-                      [catId]: (curr[catId] || []).filter(t => t.id !== taskId)
-                    }
-                  };
-                });
-              }}
-              onEdit={(catId, task) => {
-                setCurrentSection(catId);
-                setEditingTask(task);
-                setModalOpen(true);
-              }}
-            />
+            {/* Single list view with DnD support */}
+            <section className="card box-list">
+              <TaskList
+                tasks={tasks}
+                onReorder={reorderTasks}
+                onToggleDone={toggleDone}
+                onDelete={deleteTask}
+                onEdit={editTask}
+              />
+            </section>
           </>
         </main>
       </div>

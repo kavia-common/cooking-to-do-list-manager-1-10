@@ -1,48 +1,31 @@
-import React, { useMemo, useState } from 'react';
-import { DEFAULT_CATEGORIES } from '../utils/types';
+import React, { useState } from 'react';
 
 /**
  * PUBLIC_INTERFACE
  * UnifiedSidebar
- * A single sidebar that combines:
- * - Navigation (categories)
- * - Reservations management (list, select, create, rename, delete)
+ * Sidebar only for Reservations management (no category navigation).
  *
  * Props:
  * - open: boolean (for mobile toggle open/close)
- * - current: current section id (category id)
- * - onSelectSection: (id: string) => void
- *
  * - reservations: Array<{id: string, name: string}>
  * - selectedReservationId: string
  * - onSelectReservation: (id: string) => void
  * - onCreateReservation: (name: string) => void
  * - onRenameReservation: (id: string, name: string) => void
  * - onDeleteReservation: (id: string) => void
- *
  * - onToggle: (open: boolean) => void
  */
 export default function UnifiedSidebar({
   open,
-  current,
-  onSelectSection,
-
   reservations,
   selectedReservationId,
   onSelectReservation,
   onCreateReservation,
   onRenameReservation,
   onDeleteReservation,
-
   onToggle
 }) {
   const drawerClass = ['nav-drawer', open ? 'open' : ''].filter(Boolean).join(' ');
-  const items = useMemo(
-    () => [
-      ...DEFAULT_CATEGORIES.map(c => ({ id: c.id, label: c.name, icon: c.icon })),
-    ],
-    []
-  );
 
   // Local UI state for reservation CRUD
   const [creating, setCreating] = useState(false);
@@ -56,11 +39,6 @@ export default function UnifiedSidebar({
     onToggle?.(!open);
   };
   const handleClose = () => onToggle?.(false);
-
-  const handleSelectSection = (id) => {
-    onSelectSection?.(id);
-    handleClose();
-  };
 
   const submitCreate = (e) => {
     e.preventDefault();
@@ -93,41 +71,12 @@ export default function UnifiedSidebar({
       </button>
 
       <aside className={drawerClass} aria-label="Sidebar">
-        {/* Navigate Section */}
-        <div className="nav-header">
-          <span className="nav-title">Navigate</span>
-          <button className="nav-close" onClick={handleClose} aria-label="Close" type="button">
-            ✕
-          </button>
-        </div>
-        <ul className="nav-list">
-          {items.map((item) => {
-            const isActive = current === item.id;
-            const itemClass = ['nav-item', isActive ? 'active' : ''].filter(Boolean).join(' ');
-            return (
-              <li key={item.id}>
-                <button
-                  className={itemClass}
-                  onClick={() => handleSelectSection(item.id)}
-                  aria-current={isActive ? 'page' : undefined}
-                  type="button"
-                >
-                  <span className="nav-icon" aria-hidden>
-                    {item.icon}
-                  </span>
-                  <span className="nav-label">{item.label}</span>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-
-        {/* Divider */}
-        <div style={{ height: 10 }} />
-
         {/* Reservations Section */}
         <div className="nav-header">
           <span className="nav-title">Reservations</span>
+          <button className="nav-close" onClick={handleClose} aria-label="Close" type="button">
+            ✕
+          </button>
         </div>
         <ul className="nav-list" style={{ marginTop: 8 }}>
           {reservations.map(r => {

@@ -1,9 +1,9 @@
 export const DEFAULT_CATEGORIES = [
-  { id: 'prep', name: 'Prep', icon: '🔪' }
+  // No categories available after removing "Prep"
 ];
 
 export const DEFAULT_LISTS = {
-  prep: []
+  // No category buckets remain; keep as empty object for robustness
 };
 
 // PUBLIC_INTERFACE

@@ -7,7 +7,7 @@ const RESERVATIONS_STORAGE_KEY = 'cooking_reservations_state_v1';
  * {
  *   reservations: [{ id, name }],
  *   selectedReservationId: string,
- *   reservationLists: { [reservationId]: { prep: Task[], cook: Task[], serve: Task[] } }
+ *   reservationLists: { [reservationId]: {} }
  * }
  */
 export function loadReservationsState() {
@@ -22,17 +22,15 @@ export function loadReservationsState() {
 
     if (legacyRaw) {
       const legacy = JSON.parse(legacyRaw);
-      // Map legacy structure to new structure
+      // Map legacy structure to new structure without any categories
       const migrated = {
         reservations: legacy.tables || [{ id: 'default', name: 'My Reservation' }],
         selectedReservationId: legacy.selectedTableId || 'default',
-        // Ensure migrated structure contains only supported lists (no 'serve')
         reservationLists: (() => {
-          const base = legacy.tableLists || { default: { prep: [] } };
+          const base = legacy.tableLists || { default: {} };
           const sanitized = {};
           for (const key in base) {
-            const bucket = base[key] || {};
-            sanitized[key] = { prep: Array.isArray(bucket.prep) ? bucket.prep : [] };
+            sanitized[key] = {};
           }
           return sanitized;
         })(),
