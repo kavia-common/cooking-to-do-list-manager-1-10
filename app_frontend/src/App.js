@@ -20,7 +20,7 @@ function App({ initialSection }) {
     setCSSVariables();
     document.body.style.background = Theme.colors.background;
     // Update browser tab title
-    document.title = 'bonita';
+    document.title = 'chefpro';
   }, []);
 
   // Side navigation categories for cooking
@@ -55,7 +55,7 @@ function App({ initialSection }) {
               {active?.icon || '🍲'}
             </span>
             <div>
-              <h2>{active?.label || 'bonita'}</h2>
+              <h2>{active?.label || 'chefpro'}</h2>
               <p className="muted">Ocean Professional • clean and minimal</p>
             </div>
           </div>
@@ -118,7 +118,7 @@ function App({ initialSection }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
             <span className="brand-logo" aria-hidden>🍲</span>
             <div className="brand-text">
-              <h1>bonita</h1>
+              <h1>chefpro</h1>
               <p className="subtitle">Plan, prep, and cook</p>
             </div>
           </div>
