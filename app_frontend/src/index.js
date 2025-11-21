@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import Settings from './pages/Settings';
 import CookingTasks from './pages/CookingTasks';
+import MealPrep from './pages/MealPrep';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 // Mount the application with client-side routing for App, Providers/Recipes/Ingredients via prop, dedicated Cooking Tasks, and Settings.
@@ -16,6 +17,7 @@ root.render(
         <Route path="/providers" element={<App initialSection="providers" />} />
         <Route path="/recipes" element={<App initialSection="recipes" />} />
         <Route path="/ingredients" element={<App initialSection="ingredients" />} />
+        <Route path="/meal-prep" element={<App initialSection="meal-prep" />} />
         <Route path="/cooking-tasks" element={<CookingTasks />} />
         <Route
           path="/settings"

@@ -8,6 +8,7 @@ import Providers from './pages/Providers';
 import Recipes from './pages/Recipes';
 import Ingredients from './pages/Ingredients';
 import CookingTasks from './pages/CookingTasks';
+import MealPrep from './pages/MealPrep';
 
 /**
  * PUBLIC_INTERFACE
@@ -43,7 +44,7 @@ function App({ initialSection }) {
 
   const [current, setCurrent] = useState(initialSection || 'dashboard');
 
-  // Render the active section content; Providers, Recipes, Ingredients, and CookingTasks get their own components
+  // Render the active section content; Providers, Recipes, Ingredients, MealPrep, and CookingTasks get their own components
   const renderSection = () => {
     if (current === 'providers') {
       return <Providers />;
@@ -53,6 +54,9 @@ function App({ initialSection }) {
     }
     if (current === 'ingredients') {
       return <Ingredients />;
+    }
+    if (current === 'meal-prep') {
+      return <MealPrep />;
     }
     if (current === 'cooking-tasks') {
       return <CookingTasks />;
@@ -169,6 +173,10 @@ function App({ initialSection }) {
             }
             if (key === 'cooking-tasks') {
               setCurrent('cooking-tasks');
+              return;
+            }
+            if (key === 'meal-prep') {
+              setCurrent('meal-prep');
               return;
             }
             setCurrent(key);
