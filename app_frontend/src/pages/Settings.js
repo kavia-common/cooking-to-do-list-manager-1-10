@@ -27,7 +27,7 @@ export default function Settings() {
           <span className="category-icon" aria-hidden>⚙️</span>
           <div>
             <h2>Settings</h2>
-            <p className="muted">Configure your bonito preferences</p>
+            <p className="muted">Configure your bonita preferences</p>
           </div>
         </div>
         <div className="hero-actions" aria-hidden />

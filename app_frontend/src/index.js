@@ -23,7 +23,7 @@ root.render(
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
                     <span className="brand-logo" aria-hidden>🍲</span>
                     <div className="brand-text">
-                      <h1>bonito</h1>
+                      <h1>bonita</h1>
                       <p className="subtitle">Plan, prep, and cook</p>
                     </div>
                   </div>
