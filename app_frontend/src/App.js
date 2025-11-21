@@ -52,7 +52,7 @@ function App() {
     document.title = 'ChefMaster';
   }, []);
 
-  // Initialize from storage (single list). If none found, start empty (no sample data).
+  // Initialize from storage (single list). If none found, start with sample ingredients.
   useEffect(() => {
     const legacy = loadState();
     if (legacy && legacy.lists) {
@@ -66,10 +66,16 @@ function App() {
       const sanitized = combined.filter(t => t.section !== 'serving');
       setTasksState(sanitized);
     } else {
-      // No prior data: do not auto-populate with any sample ingredients
-      setTasksState([]);
+      // No prior data: seed with clearly labeled sample ingredients in the Ingredients section
+      const now = Date.now();
+      const sample = [
+        { id: `${now}_ing1`, title: 'Sample: Tomatoes (2)', notes: 'For salad • Ingredients', done: false, createdAt: now, priority: 'medium', section: 'ingredients' },
+        { id: `${now}_ing2`, title: 'Sample: Olive oil', notes: 'Extra virgin • Ingredients', done: false, createdAt: now + 1, priority: 'low', section: 'ingredients' },
+        { id: `${now}_ing3`, title: 'Sample: Garlic (3 cloves)', notes: 'Minced • Ingredients', done: false, createdAt: now + 2, priority: 'high', section: 'ingredients' },
+      ];
+      setTasksState(sample);
       // persist immediately so refresh keeps state
-      saveState({ lists: { list: [] } });
+      saveState({ lists: { list: sample } });
     }
   }, []);
 

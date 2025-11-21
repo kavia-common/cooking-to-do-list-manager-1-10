@@ -21,7 +21,7 @@ export default function TaskList({ tasks, onReorder, onToggleDone, onDelete, onE
         <div className="empty">
           <p>Nothing here yet. Use the + button to add your first item.</p>
           <p className="muted" style={{ marginTop: 8, fontSize: 12 }}>
-            Tip: In the new Providers section, you can track vendor-related tasks or notes.
+            Tip: You may see example items under Ingredients labeled "Sample:" to help you get started.
           </p>
         </div>
       )}
