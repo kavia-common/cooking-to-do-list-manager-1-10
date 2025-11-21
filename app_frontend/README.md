@@ -79,3 +79,11 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+### Browserslist data warning
+
+If you see a warning about outdated Browserslist/caniuse-lite during builds, you can update the database locally with:
+```
+npx update-browserslist-db@latest
+```
+This does not affect runtime behavior and is safe to ignore in CI if updates are not permitted.
