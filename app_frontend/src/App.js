@@ -53,6 +53,8 @@ function App() {
   }, []);
 
   // Initialize from storage (single list). If none found, start with sample ingredients.
+  // We persist tasks in a flat list under lists.list, and filter by task.section.
+  // This ensures first-time users see clearly labeled "Sample:" ingredients in the Ingredients section.
   useEffect(() => {
     const legacy = loadState();
     if (legacy && legacy.lists) {

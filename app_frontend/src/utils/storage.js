@@ -1,4 +1,7 @@
 const STORAGE_KEY = 'cooking_todo_lists_v1';
+// Note: This key stores a single list under { lists: { list: Task[] } }.
+// If the structure needs to evolve in future, bump the suffix (e.g., _v2) and
+// provide a migration step in App initialization to keep user data.
 
 // PUBLIC_INTERFACE
 export function loadState() {

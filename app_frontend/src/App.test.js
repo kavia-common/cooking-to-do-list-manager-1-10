@@ -1,8 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('renders ChefMaster header and Ingredients section by default', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  expect(screen.getByText('ChefMaster')).toBeInTheDocument();
+  // By default we land on Ingredients category header
+  expect(screen.getByText('Ingredients')).toBeInTheDocument();
 });
