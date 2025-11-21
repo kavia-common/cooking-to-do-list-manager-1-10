@@ -3,9 +3,10 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import Settings from './pages/Settings';
+import CookingTasks from './pages/CookingTasks';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-// Mount the application with client-side routing for App, Providers (via prop), and Settings.
+// Mount the application with client-side routing for App, Providers/Recipes/Ingredients via prop, dedicated Cooking Tasks, and Settings.
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
@@ -15,6 +16,7 @@ root.render(
         <Route path="/providers" element={<App initialSection="providers" />} />
         <Route path="/recipes" element={<App initialSection="recipes" />} />
         <Route path="/ingredients" element={<App initialSection="ingredients" />} />
+        <Route path="/cooking-tasks" element={<CookingTasks />} />
         <Route
           path="/settings"
           element={

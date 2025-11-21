@@ -7,6 +7,7 @@ import FAB from './components/FAB';
 import Providers from './pages/Providers';
 import Recipes from './pages/Recipes';
 import Ingredients from './pages/Ingredients';
+import CookingTasks from './pages/CookingTasks';
 
 /**
  * PUBLIC_INTERFACE
@@ -42,7 +43,7 @@ function App({ initialSection }) {
 
   const [current, setCurrent] = useState(initialSection || 'dashboard');
 
-  // Render the active section content; Providers and Recipes get their own page components
+  // Render the active section content; Providers, Recipes, Ingredients, and CookingTasks get their own components
   const renderSection = () => {
     if (current === 'providers') {
       return <Providers />;
@@ -52,6 +53,9 @@ function App({ initialSection }) {
     }
     if (current === 'ingredients') {
       return <Ingredients />;
+    }
+    if (current === 'cooking-tasks') {
+      return <CookingTasks />;
     }
 
     const active = navCategories.find((c) => c.key === current);
@@ -115,6 +119,8 @@ function App({ initialSection }) {
       alert('Add Recipe (placeholder)');
     } else if (current === 'ingredients') {
       alert('Add Ingredient (placeholder)');
+    } else if (current === 'cooking-tasks') {
+      alert('Add Cooking Task (use the Add Task button in the page)');
     } else {
       alert('Add item (placeholder)');
     }
@@ -150,18 +156,19 @@ function App({ initialSection }) {
               return;
             }
             if (key === 'providers') {
-              // Stay in-app by default; can also deep-link via /providers
               setCurrent('providers');
               return;
             }
             if (key === 'recipes') {
-              // Stay in-app by default; can also deep-link via /recipes
               setCurrent('recipes');
               return;
             }
             if (key === 'ingredients') {
-              // Stay in-app by default; can also deep-link via /ingredients
               setCurrent('ingredients');
+              return;
+            }
+            if (key === 'cooking-tasks') {
+              setCurrent('cooking-tasks');
               return;
             }
             setCurrent(key);
