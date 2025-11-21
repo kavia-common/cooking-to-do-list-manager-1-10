@@ -5,6 +5,7 @@ import { Theme, setCSSVariables } from './theme';
 import Sidebar from './components/Sidebar';
 import FAB from './components/FAB';
 import Providers from './pages/Providers';
+import Recipes from './pages/Recipes';
 
 /**
  * PUBLIC_INTERFACE
@@ -40,10 +41,13 @@ function App({ initialSection }) {
 
   const [current, setCurrent] = useState(initialSection || 'dashboard');
 
-  // Render the active section content; Providers gets its own page component
+  // Render the active section content; Providers and Recipes get their own page components
   const renderSection = () => {
     if (current === 'providers') {
       return <Providers />;
+    }
+    if (current === 'recipes') {
+      return <Recipes />;
     }
 
     const active = navCategories.find((c) => c.key === current);
@@ -103,6 +107,8 @@ function App({ initialSection }) {
     // Placeholder: in a future task, this can open TaskFormModal wired to current section
     if (current === 'providers') {
       alert('Add Provider (placeholder)');
+    } else if (current === 'recipes') {
+      alert('Add Recipe (placeholder)');
     } else {
       alert('Add item (placeholder)');
     }
@@ -140,6 +146,11 @@ function App({ initialSection }) {
             if (key === 'providers') {
               // Stay in-app by default; can also deep-link via /providers
               setCurrent('providers');
+              return;
+            }
+            if (key === 'recipes') {
+              // Stay in-app by default; can also deep-link via /recipes
+              setCurrent('recipes');
               return;
             }
             setCurrent(key);
