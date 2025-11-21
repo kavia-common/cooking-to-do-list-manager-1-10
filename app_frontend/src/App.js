@@ -10,6 +10,7 @@ import Ingredients from './pages/Ingredients';
 import CookingTasks from './pages/CookingTasks';
 import MealPrep from './pages/MealPrep';
 import Serving from './pages/Serving';
+import Dashboard from './pages/Dashboard';
 
 /**
  * PUBLIC_INTERFACE
@@ -64,6 +65,9 @@ function App({ initialSection }) {
     }
     if (current === 'serving') {
       return <Serving />;
+    }
+    if (current === 'dashboard') {
+      return <Dashboard />;
     }
 
     const active = navCategories.find((c) => c.key === current);
