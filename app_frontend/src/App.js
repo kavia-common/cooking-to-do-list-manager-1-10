@@ -6,10 +6,10 @@ import { Theme, setCSSVariables } from './theme';
 // PUBLIC_INTERFACE
 function App() {
   /**
-   * Minimal home screen:
-   * - Keep theme application and document title
-   * - Render a clean, distraction-free surface
-   * - No header, no sidebar, no lists, no FAB, no modals
+   * Minimal home screen with a top navigation bar:
+   * - Apply theme, set document title
+   * - Render a clean, empty surface beneath a minimalist top nav
+   * - Nav uses Ocean Professional colors, responsive and accessible
    */
   useEffect(() => {
     setCSSVariables();
@@ -20,53 +20,75 @@ function App() {
   return (
     <div className="ocean-app" data-theme="light" style={{ minHeight: '100%' }}>
       <div className="gradient-bg" />
+
+      {/* Top Navigation */}
+      <header
+        className="app-header"
+        aria-label="Top navigation"
+        style={{ position: 'sticky', top: 0 }}
+      >
+        <nav
+          className="brand"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 12,
+            maxWidth: 1100,
+            margin: '0 auto',
+            padding: '14px 16px',
+          }}
+          aria-label="Primary"
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
+            <span
+              className="brand-logo"
+              aria-hidden
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 12,
+                display: 'inline-grid',
+                placeItems: 'center',
+                background:
+                  'linear-gradient(135deg, rgba(37,99,235,0.15), rgba(245,158,11,0.15))',
+                boxShadow: '0 8px 20px var(--shadow-color)',
+                color: 'var(--color-text)',
+              }}
+            >
+              🍲
+            </span>
+            <h1
+              style={{
+                margin: 0,
+                fontSize: 20,
+                letterSpacing: 0.3,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                textTransform: 'lowercase',
+              }}
+              aria-label="chefmaster"
+            >
+              chefmaster
+            </h1>
+          </div>
+
+          {/* Placeholder right area for future actions (kept minimal and empty now) */}
+          <div aria-hidden style={{ width: 24, height: 24 }} />
+        </nav>
+      </header>
+
+      {/* Empty, clean content area */}
       <main
         className="main"
         style={{
-          maxWidth: 900,
+          maxWidth: 1100,
           margin: '0 auto',
           padding: '24px 16px',
-          display: 'grid',
-          placeItems: 'center',
-          minHeight: '80vh',
+          minHeight: '60vh',
         }}
-      >
-        <section
-          className="card"
-          aria-label="Minimal home"
-          style={{
-            padding: 28,
-            width: '100%',
-            maxWidth: 560,
-            textAlign: 'center',
-            background: 'var(--color-surface)',
-            border: '1px solid var(--color-border)',
-            borderRadius: 16,
-          }}
-        >
-          <div
-            style={{
-              width: 56,
-              height: 56,
-              borderRadius: 16,
-              display: 'inline-grid',
-              placeItems: 'center',
-              marginBottom: 12,
-              background:
-                'linear-gradient(135deg, rgba(37,99,235,0.10), rgba(245,158,11,0.10))',
-              boxShadow: '0 10px 24px var(--shadow-color)',
-              fontSize: 28,
-            }}
-            aria-hidden
-          >
-            🌊
-          </div>
-          <h1 style={{ margin: '8px 0 6px', fontSize: 22 }}>Welcome</h1>
-          <p className="muted" style={{ margin: 0, fontSize: 13 }}>
-            A clean start. No distractions on the home screen.
-          </p>
-        </section>
-      </main>
+      />
     </div>
   );
 }

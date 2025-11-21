@@ -1,8 +1,10 @@
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import App from './App';
 
-test('renders minimal home screen', () => {
-  render(<App />);
-  expect(screen.getByText('Welcome')).toBeInTheDocument();
-  expect(screen.getByText('A clean start. No distractions on the home screen.')).toBeInTheDocument();
+test('renders app with top navigation bar', () => {
+  const { container } = render(<App />);
+  // Ensure header exists with chefmaster title (lowercase)
+  const header = container.querySelector('header.app-header');
+  expect(header).toBeTruthy();
+  expect(container.textContent.toLowerCase()).toContain('chefmaster');
 });
