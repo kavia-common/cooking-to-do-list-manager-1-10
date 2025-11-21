@@ -191,6 +191,27 @@ function App() {
 
         <main className="main">
           <>
+            {/* Hero CTA section to prioritize creating a recipe */}
+            <section className="card hero">
+              <div className="hero-inner">
+                <div className="hero-icon" aria-hidden>🍽️</div>
+                <div className="hero-text">
+                  <h2 className="hero-title">Start a new recipe</h2>
+                  <p className="hero-subtitle">
+                    Add ingredients, plan your prep, and track cooking steps — all in one clean workspace.
+                  </p>
+                </div>
+                <div className="hero-actions">
+                  <button className="btn primary btn-hero" onClick={openAddModal}>
+                    Create recipe item
+                  </button>
+                  <button className="btn ghost" onClick={() => navigateToSection('ingredients')}>
+                    View ingredients
+                  </button>
+                </div>
+              </div>
+            </section>
+
             {/* Header for current list context and quick add */}
             <section className="category-header card box-header">
               <div className="category-title">
