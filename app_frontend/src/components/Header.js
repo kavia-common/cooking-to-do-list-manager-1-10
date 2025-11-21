@@ -7,7 +7,7 @@ export default function Header() {
       <div className="brand">
         <span className="brand-logo" aria-hidden>🍲</span>
         <div className="brand-text">
-          <h1>pro</h1>
+          <h1>tester</h1>
           <p className="subtitle">Plan, prep, and cook</p>
         </div>
       </div>

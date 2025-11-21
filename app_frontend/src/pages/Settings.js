@@ -13,6 +13,8 @@ export default function Settings() {
     // Ensure theme variables are applied if this is routed standalone
     setCSSVariables();
     document.body.style.background = Theme.colors.background;
+    // Maintain tab title consistency on direct navigation to /settings
+    document.title = 'tester';
   }, []);
 
   const onSave = (e) => {
@@ -27,7 +29,7 @@ export default function Settings() {
           <span className="category-icon" aria-hidden>⚙️</span>
           <div>
             <h2>Settings</h2>
-            <p className="muted">Configure your pro preferences</p>
+            <p className="muted">Configure your tester preferences</p>
           </div>
         </div>
         <div className="hero-actions" aria-hidden />

@@ -8,6 +8,10 @@ import React, { useMemo, useState } from 'react';
  * - Styled with the Ocean Professional theme using existing CSS tokens.
  */
 export default function Providers() {
+  // Keep browser tab title consistent when landing directly on /providers
+  if (typeof document !== 'undefined') {
+    document.title = 'tester';
+  }
   // Mock providers list
   const initialProviders = useMemo(
     () => ([
