@@ -15,7 +15,7 @@ import Providers from './pages/Providers';
  * - Floating Action Button
  * The UI adheres to the Ocean Professional theme and is responsive.
  */
-function App() {
+function App({ initialSection }) {
   useEffect(() => {
     setCSSVariables();
     document.body.style.background = Theme.colors.background;
@@ -37,7 +37,7 @@ function App() {
     []
   );
 
-  const [current, setCurrent] = useState('dashboard');
+  const [current, setCurrent] = useState(initialSection || 'dashboard');
 
   // Render the active section content; Providers gets its own page component
   const renderSection = () => {
@@ -131,7 +131,18 @@ function App() {
         <Sidebar
           categories={navCategories}
           current={current}
-          onSelect={(key) => setCurrent(key)}
+          onSelect={(key) => {
+            if (key === 'settings') {
+              window.location.href = '/settings';
+              return;
+            }
+            if (key === 'providers') {
+              // Stay in-app by default; can also deep-link via /providers
+              setCurrent('providers');
+              return;
+            }
+            setCurrent(key);
+          }}
         />
         <main className="main" aria-live="polite">
           {renderSection()}

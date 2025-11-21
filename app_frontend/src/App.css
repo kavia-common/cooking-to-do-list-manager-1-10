@@ -350,6 +350,37 @@ a{color:inherit}
 .icon-btn:hover{ transform: translateY(-1px); }
 .icon-btn.danger{ color:#B91C1C; border-color:#FCA5A5; }
 
+/* Simple switch style for checkbox placeholders */
+.switch input[type="checkbox"]{
+  appearance: none;
+  width: 42px;
+  height: 24px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: linear-gradient(180deg, #f8fafc, #ffffff);
+  position: relative;
+  transition: background-color .2s ease, border-color .2s ease;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.02);
+}
+.switch input[type="checkbox"]::after{
+  content: "";
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  box-shadow: 0 2px 6px rgba(2,6,23,0.18);
+  transition: transform .2s ease;
+}
+.switch input[type="checkbox"]:checked{
+  background: linear-gradient(135deg, #2563EB, #1D4ED8);
+  border-color: transparent;
+}
+.switch input[type="checkbox"]:checked::after{
+  transform: translateX(18px);
+}
+
 /* Floating Action Button */
 .fab{
   position:fixed;
