@@ -9,6 +9,7 @@ import Recipes from './pages/Recipes';
 import Ingredients from './pages/Ingredients';
 import CookingTasks from './pages/CookingTasks';
 import MealPrep from './pages/MealPrep';
+import Serving from './pages/Serving';
 
 /**
  * PUBLIC_INTERFACE
@@ -60,6 +61,9 @@ function App({ initialSection }) {
     }
     if (current === 'cooking-tasks') {
       return <CookingTasks />;
+    }
+    if (current === 'serving') {
+      return <Serving />;
     }
 
     const active = navCategories.find((c) => c.key === current);
@@ -177,6 +181,10 @@ function App({ initialSection }) {
             }
             if (key === 'meal-prep') {
               setCurrent('meal-prep');
+              return;
+            }
+            if (key === 'serving') {
+              setCurrent('serving');
               return;
             }
             setCurrent(key);
