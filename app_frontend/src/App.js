@@ -4,6 +4,7 @@ import './index.css';
 import { Theme, setCSSVariables } from './theme';
 import Sidebar from './components/Sidebar';
 import FAB from './components/FAB';
+import Providers from './pages/Providers';
 
 /**
  * PUBLIC_INTERFACE
@@ -29,6 +30,7 @@ function App() {
       { key: 'meal-prep', label: 'Meal Prep', icon: '🧰', count: 2 },
       { key: 'cooking-tasks', label: 'Cooking Tasks', icon: '🍳', count: 4 },
       { key: 'recipes', label: 'Recipes', icon: '📖' },
+      { key: 'providers', label: 'Providers', icon: '🤝' }, // New navigation entry
       { key: 'serving', label: 'Serving', icon: '🍽️' },
       { key: 'settings', label: 'Settings', icon: '⚙️' },
     ],
@@ -37,8 +39,12 @@ function App() {
 
   const [current, setCurrent] = useState('dashboard');
 
-  // Simple placeholder render per section (non-breaking; no backend dependency)
+  // Render the active section content; Providers gets its own page component
   const renderSection = () => {
+    if (current === 'providers') {
+      return <Providers />;
+    }
+
     const active = navCategories.find((c) => c.key === current);
     return (
       <div className="card">
@@ -94,7 +100,11 @@ function App() {
 
   const onFabClick = () => {
     // Placeholder: in a future task, this can open TaskFormModal wired to current section
-    alert('Add item (placeholder)');
+    if (current === 'providers') {
+      alert('Add Provider (placeholder)');
+    } else {
+      alert('Add item (placeholder)');
+    }
   };
 
   return (
