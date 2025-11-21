@@ -3,8 +3,8 @@ import App from './App';
 
 test('renders app with top navigation bar', () => {
   const { container } = render(<App />);
-  // Ensure header exists with 'tester' title
+  // Ensure header exists with 'master' title
   const header = container.querySelector('header.app-header');
   expect(header).toBeTruthy();
-  expect(container.textContent).toContain('tester');
+  expect(container.textContent).toContain('master');
 });

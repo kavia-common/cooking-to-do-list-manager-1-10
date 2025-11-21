@@ -14,7 +14,7 @@ export default function Settings() {
     setCSSVariables();
     document.body.style.background = Theme.colors.background;
     // Maintain tab title consistency on direct navigation to /settings
-    document.title = 'tester';
+    document.title = 'master';
   }, []);
 
   const onSave = (e) => {
@@ -29,7 +29,7 @@ export default function Settings() {
           <span className="category-icon" aria-hidden>⚙️</span>
           <div>
             <h2>Settings</h2>
-            <p className="muted">Configure your tester preferences</p>
+            <p className="muted">Configure your master preferences</p>
           </div>
         </div>
         <div className="hero-actions" aria-hidden />

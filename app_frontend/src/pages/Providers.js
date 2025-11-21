@@ -10,7 +10,7 @@ import React, { useMemo, useState } from 'react';
 export default function Providers() {
   // Keep browser tab title consistent when landing directly on /providers
   if (typeof document !== 'undefined') {
-    document.title = 'tester';
+    document.title = 'master';
   }
   // Mock providers list
   const initialProviders = useMemo(
