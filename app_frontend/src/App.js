@@ -6,6 +6,7 @@ import Sidebar from './components/Sidebar';
 import FAB from './components/FAB';
 import Providers from './pages/Providers';
 import Recipes from './pages/Recipes';
+import Ingredients from './pages/Ingredients';
 
 /**
  * PUBLIC_INTERFACE
@@ -28,7 +29,7 @@ function App({ initialSection }) {
   const navCategories = useMemo(
     () => [
       { key: 'dashboard', label: 'Dashboard', icon: '🏠' },
-      { key: 'ingredients', label: 'Ingredients', icon: '🧅', count: 3 },
+      { key: 'ingredients', label: 'Ingredients', icon: '🧅', count: 5 },
       { key: 'meal-prep', label: 'Meal Prep', icon: '🧰', count: 2 },
       { key: 'cooking-tasks', label: 'Cooking Tasks', icon: '🍳', count: 4 },
       { key: 'recipes', label: 'Recipes', icon: '📖' },
@@ -48,6 +49,9 @@ function App({ initialSection }) {
     }
     if (current === 'recipes') {
       return <Recipes />;
+    }
+    if (current === 'ingredients') {
+      return <Ingredients />;
     }
 
     const active = navCategories.find((c) => c.key === current);
@@ -109,6 +113,8 @@ function App({ initialSection }) {
       alert('Add Provider (placeholder)');
     } else if (current === 'recipes') {
       alert('Add Recipe (placeholder)');
+    } else if (current === 'ingredients') {
+      alert('Add Ingredient (placeholder)');
     } else {
       alert('Add item (placeholder)');
     }
@@ -151,6 +157,11 @@ function App({ initialSection }) {
             if (key === 'recipes') {
               // Stay in-app by default; can also deep-link via /recipes
               setCurrent('recipes');
+              return;
+            }
+            if (key === 'ingredients') {
+              // Stay in-app by default; can also deep-link via /ingredients
+              setCurrent('ingredients');
               return;
             }
             setCurrent(key);

@@ -14,6 +14,7 @@ root.render(
         <Route path="/" element={<App />} />
         <Route path="/providers" element={<App initialSection="providers" />} />
         <Route path="/recipes" element={<App initialSection="recipes" />} />
+        <Route path="/ingredients" element={<App initialSection="ingredients" />} />
         <Route
           path="/settings"
           element={
