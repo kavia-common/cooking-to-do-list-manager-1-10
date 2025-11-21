@@ -3,8 +3,8 @@ import App from './App';
 
 test('renders app with top navigation bar', () => {
   const { container } = render(<App />);
-  // Ensure header exists with proChef title
+  // Ensure header exists with 'pro' title
   const header = container.querySelector('header.app-header');
   expect(header).toBeTruthy();
-  expect(container.textContent).toContain('proChef');
+  expect(container.textContent).toContain('pro');
 });
