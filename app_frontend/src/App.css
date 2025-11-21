@@ -162,6 +162,7 @@ a{color:inherit}
 @media (max-width: 860px){
   .content{ flex-direction:column; }
   .sidebar{ position:relative; top:auto; width:100%; flex:1 1 auto; }
+  .sidebar-nav{ padding:10px 8px; }
 }
 
 /* Cards */

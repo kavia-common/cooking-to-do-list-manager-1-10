@@ -2,21 +2,21 @@ import React from 'react';
 
 /**
  * PUBLIC_INTERFACE
- * Sidebar component that renders a left-side navigation drawer of recipe sections.
- * Allows selecting a category and toggling collapse on smaller screens.
+ * Sidebar component that renders a left-side navigation drawer of cooking sections.
+ * Allows selecting a category and adapts responsively (stacks on mobile).
  */
 export default function Sidebar({ categories, current, onSelect }) {
   return (
-    <aside className="sidebar card" aria-label="Recipe sections">
+    <aside className="sidebar card" aria-label="Cooking sections">
       <div className="sidebar-header">
         <span className="sidebar-icon" aria-hidden>👨‍🍳</span>
         <div className="sidebar-title">
-          <h3>Recipe Sections</h3>
-          <p className="muted">Navigate your lists</p>
+          <h3>Cooking Sections</h3>
+          <p className="muted">Quickly jump between areas</p>
         </div>
       </div>
 
-      <nav className="sidebar-nav" aria-label="Recipe sections navigation">
+      <nav className="sidebar-nav" aria-label="Cooking sections navigation">
         {categories.map((cat) => {
           const active = current === cat.key;
           return (
