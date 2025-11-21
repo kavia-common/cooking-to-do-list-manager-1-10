@@ -19,7 +19,8 @@ function App({ initialSection }) {
   useEffect(() => {
     setCSSVariables();
     document.body.style.background = Theme.colors.background;
-    document.title = 'cheftito';
+    // Update browser tab title
+    document.title = 'perfectitio2';
   }, []);
 
   // Side navigation categories for cooking
@@ -54,7 +55,7 @@ function App({ initialSection }) {
               {active?.icon || '🍲'}
             </span>
             <div>
-              <h2>{active?.label || 'cheftito'}</h2>
+              <h2>{active?.label || 'perfectitio2'}</h2>
               <p className="muted">Ocean Professional • clean and minimal</p>
             </div>
           </div>
@@ -117,7 +118,7 @@ function App({ initialSection }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
             <span className="brand-logo" aria-hidden>🍲</span>
             <div className="brand-text">
-              <h1>cheftito</h1>
+              <h1>perfectitio2</h1>
               <p className="subtitle">Plan, prep, and cook</p>
             </div>
           </div>
