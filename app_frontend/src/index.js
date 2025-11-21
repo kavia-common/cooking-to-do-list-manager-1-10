@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import Settings from './pages/Settings';
-import Providers from './pages/Providers';
 import {
   BrowserRouter,
   Routes,
