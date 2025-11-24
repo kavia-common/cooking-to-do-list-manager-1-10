@@ -17,6 +17,7 @@ root.render(
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/dashboard" element={<App initialSection="dashboard" />} />
+        <Route path="/providers" element={<App initialSection="providers" />} />
         <Route path="/recipes" element={<App initialSection="recipes" />} />
         <Route path="/ingredients" element={<App initialSection="ingredients" />} />
 
@@ -53,7 +54,10 @@ root.render(
                       <span className="nav-emoji" aria-hidden>🏠</span>
                       <span className="nav-text"><span className="nav-label">Home</span></span>
                     </a>
-
+                    <a className="nav-item" href="/providers">
+                      <span className="nav-emoji" aria-hidden>🤝</span>
+                      <span className="nav-text"><span className="nav-label">Providers</span></span>
+                    </a>
                     <a className="nav-item active" href="/settings" aria-current="page">
                       <span className="nav-emoji" aria-hidden>⚙️</span>
                       <span className="nav-text"><span className="nav-label">Settings</span></span>

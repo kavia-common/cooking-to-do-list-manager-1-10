@@ -4,6 +4,7 @@ import './index.css';
 import { Theme, setCSSVariables } from './theme';
 import Sidebar from './components/Sidebar';
 import FAB from './components/FAB';
+import Providers from './pages/Providers';
 import Recipes from './pages/Recipes';
 import Ingredients from './pages/Ingredients';
 import CookingTasks from './pages/CookingTasks';
@@ -36,6 +37,7 @@ function App({ initialSection }) {
 
       { key: 'cooking-tasks', label: 'Cooking Tasks', icon: '🍳', count: 4 },
       { key: 'recipes', label: 'Recipes', icon: '📖' },
+      { key: 'providers', label: 'Providers', icon: '🤝' }, // New navigation entry
       { key: 'serving', label: 'Serving', icon: '🍽️' },
       { key: 'settings', label: 'Settings', icon: '⚙️' },
     ],
@@ -44,8 +46,11 @@ function App({ initialSection }) {
 
   const [current, setCurrent] = useState(initialSection || 'dashboard');
 
-  // Render the active section content; Recipes, Ingredients, MealPrep, and CookingTasks get their own components
+  // Render the active section content; Providers, Recipes, Ingredients, MealPrep, and CookingTasks get their own components
   const renderSection = () => {
+    if (current === 'providers') {
+      return <Providers />;
+    }
     if (current === 'recipes') {
       return <Recipes />;
     }
@@ -118,7 +123,9 @@ function App({ initialSection }) {
 
   const onFabClick = () => {
     // Placeholder: in a future task, this can open TaskFormModal wired to current section
-    if (current === 'recipes') {
+    if (current === 'providers') {
+      alert('Add Provider (placeholder)');
+    } else if (current === 'recipes') {
       alert('Add Recipe (placeholder)');
     } else if (current === 'ingredients') {
       alert('Add Ingredient (placeholder)');
@@ -156,6 +163,10 @@ function App({ initialSection }) {
           onSelect={(key) => {
             if (key === 'settings') {
               window.location.href = '/settings';
+              return;
+            }
+            if (key === 'providers') {
+              setCurrent('providers');
               return;
             }
             if (key === 'recipes') {
