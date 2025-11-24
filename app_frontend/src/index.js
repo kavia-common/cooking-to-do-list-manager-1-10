@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import Settings from './pages/Settings';
 import CookingTasks from './pages/CookingTasks';
-import MealPrep from './pages/MealPrep';
+
 import Serving from './pages/Serving';
 import Dashboard from './pages/Dashboard';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -20,7 +20,7 @@ root.render(
         <Route path="/providers" element={<App initialSection="providers" />} />
         <Route path="/recipes" element={<App initialSection="recipes" />} />
         <Route path="/ingredients" element={<App initialSection="ingredients" />} />
-        <Route path="/meal-prep" element={<App initialSection="meal-prep" />} />
+
         <Route path="/cooking-tasks" element={<CookingTasks />} />
         <Route path="/serving" element={<Serving />} />
         <Route

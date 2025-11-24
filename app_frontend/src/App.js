@@ -8,7 +8,7 @@ import Providers from './pages/Providers';
 import Recipes from './pages/Recipes';
 import Ingredients from './pages/Ingredients';
 import CookingTasks from './pages/CookingTasks';
-import MealPrep from './pages/MealPrep';
+
 import Serving from './pages/Serving';
 import Dashboard from './pages/Dashboard';
 
@@ -34,7 +34,7 @@ function App({ initialSection }) {
     () => [
       { key: 'dashboard', label: 'Dashboard', icon: '🏠' },
       { key: 'ingredients', label: 'Ingredients', icon: '🧅', count: 5 },
-      { key: 'meal-prep', label: 'Meal Prep', icon: '🧰', count: 2 },
+
       { key: 'cooking-tasks', label: 'Cooking Tasks', icon: '🍳', count: 4 },
       { key: 'recipes', label: 'Recipes', icon: '📖' },
       { key: 'providers', label: 'Providers', icon: '🤝' }, // New navigation entry
@@ -57,9 +57,7 @@ function App({ initialSection }) {
     if (current === 'ingredients') {
       return <Ingredients />;
     }
-    if (current === 'meal-prep') {
-      return <MealPrep />;
-    }
+
     if (current === 'cooking-tasks') {
       return <CookingTasks />;
     }
@@ -183,10 +181,7 @@ function App({ initialSection }) {
               setCurrent('cooking-tasks');
               return;
             }
-            if (key === 'meal-prep') {
-              setCurrent('meal-prep');
-              return;
-            }
+
             if (key === 'serving') {
               setCurrent('serving');
               return;
