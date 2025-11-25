@@ -8,7 +8,7 @@ import Serving from './pages/Serving';
 import Dashboard from './pages/Dashboard';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-// Mount the application with client-side routing for App, Recipes/Ingredients via prop, dedicated Cooking, and Settings.
+// Mount the application with client-side routing for App and dedicated sections
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
@@ -17,6 +17,7 @@ root.render(
         <Route path="/" element={<App />} />
         <Route path="/dashboard" element={<App initialSection="dashboard" />} />
         <Route path="/recipes" element={<App initialSection="recipes" />} />
+        <Route path="/ingredients" element={<App initialSection="ingredients" />} />
 
         <Route path="/serving" element={<Serving />} />
         <Route path="/tables" element={<Serving />} />
@@ -52,7 +53,10 @@ root.render(
                       <span className="nav-emoji" aria-hidden>🏠</span>
                       <span className="nav-text"><span className="nav-label">Home</span></span>
                     </a>
-
+                    <a className="nav-item" href="/ingredients">
+                      <span className="nav-emoji" aria-hidden>🧅</span>
+                      <span className="nav-text"><span className="nav-label">Ingredients</span></span>
+                    </a>
                     <a className="nav-item active" href="/settings" aria-current="page">
                       <span className="nav-emoji" aria-hidden>⚙️</span>
                       <span className="nav-text"><span className="nav-label">Settings</span></span>

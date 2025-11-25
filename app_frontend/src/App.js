@@ -5,7 +5,7 @@ import { Theme, setCSSVariables } from './theme';
 import Sidebar from './components/Sidebar';
 import FAB from './components/FAB';
 import Recipes from './pages/Recipes';
-
+import Ingredients from './pages/Ingredients';
 import Serving from './pages/Serving';
 import Dashboard from './pages/Dashboard';
 import { ensureSampleDataSeeded } from './utils/sampleData';
@@ -30,10 +30,9 @@ function App({ initialSection }) {
     ensureSampleDataSeeded();
   }, []);
 
-  // Side navigation categories for cooking (tables now refers to seat assignments)
+  // Side navigation counts for recipes-related items to display on badges if desired
   const [navCounts, setNavCounts] = useState({ prep: 0, cooking: 0, serving: 0 });
   useEffect(() => {
-    // Update counts from storage to show badge numbers on navigation
     const st = loadState();
     const lists = st?.lists || {};
     setNavCounts({
@@ -46,6 +45,7 @@ function App({ initialSection }) {
   const navCategories = useMemo(
     () => [
       { key: 'dashboard', label: 'Dashboard', icon: '🏠' },
+      { key: 'ingredients', label: 'Ingredients', icon: '🧅' },
       { key: 'recipes', label: 'Recipes', icon: '📖' },
       { key: 'tables', label: 'Seat Assignments', icon: '🍽️', count: navCounts.prep + navCounts.cooking + navCounts.serving },
       { key: 'settings', label: 'Settings', icon: '⚙️' },
@@ -55,12 +55,14 @@ function App({ initialSection }) {
 
   const [current, setCurrent] = useState(initialSection || 'dashboard');
 
-  // Render the active section content; Recipes, Ingredients, MealPrep, and CookingTasks get their own components
+  // Render active section
   const renderSection = () => {
+    if (current === 'ingredients') {
+      return <Ingredients />;
+    }
     if (current === 'recipes') {
       return <Recipes />;
     }
-
     if (current === 'tables') {
       return <Serving />;
     }
@@ -78,7 +80,7 @@ function App({ initialSection }) {
             </span>
             <div>
               <h2>{active?.label || 'chef master'}</h2>
-              <p className="muted">Ocean Professional • clean and minimal (Seat management where applicable)</p>
+              <p className="muted">Ocean Professional • clean and minimal</p>
             </div>
           </div>
           <div className="hero-actions" aria-hidden />
@@ -94,7 +96,7 @@ function App({ initialSection }) {
                   : `You are viewing: ${active?.label}`}
               </h3>
               <p className="hero-subtitle">
-                Use the + button to add items. The left drawer helps you jump across sections like recipes and seating.
+                Use the + button to add items. The left drawer helps you jump across sections like ingredients, recipes, and seating.
               </p>
             </div>
             <div className="hero-actions">
@@ -110,8 +112,7 @@ function App({ initialSection }) {
             <div className="empty">
               <p>No items in this section yet.</p>
               <p className="muted" style={{ marginTop: 8, fontSize: 12 }}>
-                This placeholder preserves current functionality while adding the navigation
-                structure requested.
+                This placeholder preserves current functionality while adding the navigation structure requested.
               </p>
             </div>
           </div>
@@ -121,8 +122,9 @@ function App({ initialSection }) {
   };
 
   const onFabClick = () => {
-    // Placeholder: in a future task, this can open TaskFormModal wired to current section
-    if (current === 'recipes') {
+    if (current === 'ingredients') {
+      alert('Add Ingredient (placeholder)');
+    } else if (current === 'recipes') {
       alert('Add Recipe (placeholder)');
     } else if (current === 'tables') {
       alert('Seat Assignments do not support tasks.');
@@ -160,13 +162,15 @@ function App({ initialSection }) {
               window.location.href = '/settings';
               return;
             }
+            if (key === 'ingredients') {
+              setCurrent('ingredients');
+              return;
+            }
             if (key === 'recipes') {
               setCurrent('recipes');
               return;
             }
-
             if (key === 'tables') {
-              // Seat Assignments section
               setCurrent('tables');
               return;
             }
