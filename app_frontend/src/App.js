@@ -124,6 +124,8 @@ function App({ initialSection }) {
       alert('Add Ingredient (placeholder)');
     } else if (current === 'cooking-tasks') {
       alert('Add Cooking Task (use the Add Task button in the page)');
+    } else if (current === 'tables') {
+      alert('Seat Assignments do not support tasks.');
     } else {
       alert('Add item (placeholder)');
     }

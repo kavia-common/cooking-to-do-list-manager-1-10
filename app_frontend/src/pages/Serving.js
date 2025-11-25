@@ -1,16 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import TaskList from '../components/TaskList';
-import TaskFormModal from '../components/TaskFormModal';
 import { Theme, setCSSVariables } from '../theme';
-import { createTask, reorder } from '../utils/types';
 import { getRestaurantLayoutConfig, getTableLabels } from '../utils/config';
 
 /**
  * PUBLIC_INTERFACE
  * Seat Assignments page
  * - Displays an interactive restaurant table grid driven by configurable rows/columns.
- * - Preserves existing serving task functionality below the grid.
  * - Allows selecting a table cell and mapping a simple assignment label to that table.
+ * - All task-related UI and logic have been removed to focus purely on seat assignments.
  */
 export default function Serving() {
   useEffect(() => {
@@ -25,60 +22,10 @@ export default function Serving() {
   const tableLabels = useMemo(() => getTableLabels(rows, cols), [rows, cols]);
 
   // Local in-memory assignments mapping: { tableIndex: string }
-  const [assignments, setAssignments] = useState(() => {
-    // Could be hydrated from localStorage or an API in future
-    return {};
-  });
+  const [assignments, setAssignments] = useState({});
 
   const [selectedTable, setSelectedTable] = useState(null);
   const [newAssignmentText, setNewAssignmentText] = useState('');
-
-  // Initial tasks for Serving (placeholder/demo data)
-  const initialServing = useMemo(
-    () => ([
-      { ...createTask('Set the table', 'Plates, cutlery, napkins', 'low'), id: 'srv1' },
-      { ...createTask('Warm plates', 'Low oven or plate warmer', 'medium'), id: 'srv2' },
-      { ...createTask('Garnish dishes', 'Fresh herbs on top', 'medium'), id: 'srv3' },
-    ]),
-    []
-  );
-
-  const [tasks, setTasks] = useState(initialServing);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editItem, setEditItem] = useState(null);
-
-  const openAdd = () => {
-    setEditItem(null);
-    setModalOpen(true);
-  };
-
-  const onAddOrUpdate = ({ title, notes, priority }) => {
-    if (editItem) {
-      setTasks(prev => prev.map(t => t.id === editItem.id ? { ...t, title, notes, priority } : t));
-    } else {
-      const task = createTask(title, notes, priority);
-      setTasks(prev => [{ ...task }, ...prev]);
-    }
-    setModalOpen(false);
-    setEditItem(null);
-  };
-
-  const onToggleDone = (id) => {
-    setTasks(prev => prev.map(t => (t.id === id ? { ...t, done: !t.done } : t)));
-  };
-
-  const onDelete = (id) => {
-    setTasks(prev => prev.filter(t => t.id !== id));
-  };
-
-  const onEdit = (task) => {
-    setEditItem(task);
-    setModalOpen(true);
-  };
-
-  const onReorder = (startIndex, endIndex) => {
-    setTasks(prev => reorder(prev, startIndex, endIndex));
-  };
 
   // PUBLIC_INTERFACE
   const handleCellClick = (index) => {
@@ -126,9 +73,7 @@ export default function Serving() {
             <p className="muted">Assign guests to tables in a clear, responsive grid</p>
           </div>
         </div>
-        <div className="hero-actions">
-          <button className="btn primary" onClick={openAdd}>Add Task</button>
-        </div>
+        <div className="hero-actions" aria-hidden />
       </div>
 
       {/* Hero with quick summary */}
@@ -139,7 +84,7 @@ export default function Serving() {
             <h3 className="hero-title">Visual table layout</h3>
             <p className="hero-subtitle">
               The grid below uses your configured layout of {rows} row{rows !== 1 ? 's' : ''} × {cols} column{cols !== 1 ? 's' : ''}.
-              Click a table to add or update its assignment label. Keep notes and tasks below as you coordinate seating.
+              Click a table to add or update its assignment label.
             </p>
           </div>
           <div className="hero-actions" aria-hidden />
@@ -211,7 +156,7 @@ export default function Serving() {
                     </span>
                   </div>
                   <div className="task-notes">
-                    Click a table above to edit its assignment label (e.g., "Smith party", "VIP", or a server name).
+                    Click a table above to edit its assignment label (e.g., "Smith party", "VIP", or a server name").
                   </div>
                 </div>
               </div>
@@ -238,32 +183,7 @@ export default function Serving() {
             </div>
           </div>
         </div>
-
-        {/* Task list remains to preserve functionality */}
-        <div className="list">
-          <h3>Seat Assignment Tasks</h3>
-          <div className="box-list" style={{ paddingTop: 0 }}>
-            <TaskList
-              tasks={tasks}
-              onReorder={onReorder}
-              onToggleDone={onToggleDone}
-              onDelete={onDelete}
-              onEdit={onEdit}
-            />
-          </div>
-        </div>
       </div>
-
-      {/* Modal for add/edit */}
-      <TaskFormModal
-        open={modalOpen}
-        onClose={() => {
-          setModalOpen(false);
-          setEditItem(null);
-        }}
-        onSubmit={onAddOrUpdate}
-        initial={editItem || undefined}
-      />
     </div>
   );
 }
