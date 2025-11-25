@@ -19,6 +19,11 @@ export function getSampleRecipeTasks() {
   // Notes provide quick context for the user.
   const sample = {
     prep: [
+      // Explicit simple prep examples visible by default
+      createTask('Chop onions', 'Small dice for even cooking', 'medium'),
+      createTask('Marinate chicken', 'Use yogurt/spice blend; 2–4 hours is ideal', 'high'),
+      createTask('Preheat oven', 'Set to 400°F / 200°C and allow to stabilize', 'low'),
+      // Existing themed prep items for variety
       createTask('Chop vegetables for Ratatouille', 'Eggplant, zucchini, bell peppers, onions, tomatoes', 'medium'),
       createTask('Marinate chicken for Tikka', 'Yogurt + spices; refrigerate 2–4 hours', 'high'),
     ],
