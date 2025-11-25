@@ -94,7 +94,6 @@ export default function Serving() {
       {/* Table Grid */}
       <div className="lists">
         <div className="list">
-          <h3>Tables</h3>
           <div className="box-list" style={{ paddingTop: 0 }}>
             <div style={gridStyle} role="grid" aria-label="Restaurant tables grid">
               {tableLabels.map((label, idx) => {
