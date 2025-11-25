@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import Settings from './pages/Settings';
-import CookingTasks from './pages/CookingTasks';
 
 import Serving from './pages/Serving';
 import Dashboard from './pages/Dashboard';
@@ -20,7 +19,7 @@ root.render(
         <Route path="/recipes" element={<App initialSection="recipes" />} />
         <Route path="/ingredients" element={<App initialSection="ingredients" />} />
 
-        <Route path="/cooking-tasks" element={<CookingTasks />} />
+
         <Route path="/serving" element={<Serving />} />
         <Route path="/tables" element={<Serving />} />
         <Route path="/seat-assignments" element={<Serving />} />

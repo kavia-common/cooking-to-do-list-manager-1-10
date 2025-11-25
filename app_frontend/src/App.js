@@ -6,7 +6,6 @@ import Sidebar from './components/Sidebar';
 import FAB from './components/FAB';
 import Recipes from './pages/Recipes';
 import Ingredients from './pages/Ingredients';
-import CookingTasks from './pages/CookingTasks';
 
 import Serving from './pages/Serving';
 import Dashboard from './pages/Dashboard';
@@ -33,8 +32,6 @@ function App({ initialSection }) {
     () => [
       { key: 'dashboard', label: 'Dashboard', icon: '🏠' },
       { key: 'ingredients', label: 'Ingredients', icon: '🧅', count: 5 },
-
-      { key: 'cooking-tasks', label: 'Cooking', icon: '🍳', count: 4 },
       { key: 'recipes', label: 'Recipes', icon: '📖' },
       { key: 'tables', label: 'Seat Assignments', icon: '🍽️' },
       { key: 'settings', label: 'Settings', icon: '⚙️' },
@@ -53,9 +50,7 @@ function App({ initialSection }) {
       return <Ingredients />;
     }
 
-    if (current === 'cooking-tasks') {
-      return <CookingTasks />;
-    }
+
     if (current === 'tables') {
       return <Serving />;
     }
@@ -89,8 +84,7 @@ function App({ initialSection }) {
                   : `You are viewing: ${active?.label}`}
               </h3>
               <p className="hero-subtitle">
-                Use the + button to add items. The left drawer helps you jump across cooking
-                sections like ingredients, meal prep, and more.
+                Use the + button to add items. The left drawer helps you jump across sections like ingredients, recipes, and seating.
               </p>
             </div>
             <div className="hero-actions">
@@ -122,8 +116,6 @@ function App({ initialSection }) {
       alert('Add Recipe (placeholder)');
     } else if (current === 'ingredients') {
       alert('Add Ingredient (placeholder)');
-    } else if (current === 'cooking-tasks') {
-      alert('Add Cooking Task (use the Add Task button in the page)');
     } else if (current === 'tables') {
       alert('Seat Assignments do not support tasks.');
     } else {
@@ -168,10 +160,7 @@ function App({ initialSection }) {
               setCurrent('ingredients');
               return;
             }
-            if (key === 'cooking-tasks') {
-              setCurrent('cooking-tasks');
-              return;
-            }
+
 
             if (key === 'tables') {
               // Seat Assignments section

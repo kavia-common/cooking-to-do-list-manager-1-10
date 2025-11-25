@@ -36,8 +36,7 @@ export default function Dashboard() {
           <div className="hero-text">
             <h3 className="hero-title">Welcome back!</h3>
             <p className="hero-subtitle">
-              This is your starting point. Navigate using the left drawer to manage ingredients, meal
-              prep, cooking, and more. Use the + button to quickly add items as you work.
+              This is your starting point. Navigate using the left drawer to manage ingredients, recipes, and seating. Use the + button to quickly add items as you work.
             </p>
           </div>
           <div className="hero-actions" aria-hidden />
