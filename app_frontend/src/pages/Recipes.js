@@ -13,7 +13,7 @@ export default function Recipes() {
     // Ensure theme variables are applied if landing directly on /recipes
     setCSSVariables();
     document.body.style.background = Theme.colors.background;
-    document.title = 'maestro';
+    document.title = 'chef master';
   }, []);
 
   const [query, setQuery] = useState('');

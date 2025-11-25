@@ -13,7 +13,7 @@ export default function Ingredients() {
     // Ensure theme variables are applied if landing directly on /ingredients
     setCSSVariables();
     document.body.style.background = Theme.colors.background;
-    document.title = 'maestro';
+    document.title = 'chef master';
   }, []);
 
   // Mock ingredients dataset (placeholder)

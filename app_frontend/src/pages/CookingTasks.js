@@ -16,7 +16,7 @@ export default function CookingTasks() {
     // Ensure theme variables are applied if landing directly on this route
     setCSSVariables();
     document.body.style.background = Theme.colors.background;
-    document.title = 'maestro';
+    document.title = 'chef master';
   }, []);
 
   // Initial categorized tasks (placeholder/demo data)

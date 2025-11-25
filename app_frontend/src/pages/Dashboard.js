@@ -12,7 +12,7 @@ export default function Dashboard() {
     // Ensure theme variables are applied if landing directly on this route
     setCSSVariables();
     document.body.style.background = Theme.colors.background;
-    document.title = 'maestro';
+    document.title = 'chef master';
   }, []);
 
   return (

@@ -14,7 +14,7 @@ export default function Settings() {
     setCSSVariables();
     document.body.style.background = Theme.colors.background;
     // Maintain tab title consistency on direct navigation to /settings
-    document.title = 'maestro';
+    document.title = 'chef master';
   }, []);
 
   const onSave = (e) => {
