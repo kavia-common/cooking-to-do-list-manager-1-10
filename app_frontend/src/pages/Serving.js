@@ -6,8 +6,8 @@ import { createTask, reorder } from '../utils/types';
 
 /**
  * PUBLIC_INTERFACE
- * Serving page
- * - Dedicated page for displaying and managing serving-related tasks.
+ * Tables page
+ * - Dedicated page for displaying and managing table-related tasks.
  * - Follows the same categorized task structure styling and interactions.
  * - Users can view, add, edit, delete, complete, and reorder serving tasks locally.
  */
@@ -73,7 +73,7 @@ export default function Serving() {
         <div className="category-title">
           <span className="category-icon" aria-hidden>🍽️</span>
           <div>
-            <h2>Serving</h2>
+            <h2>Tables</h2>
             <p className="muted">Presentation, plating, and table service tasks</p>
           </div>
         </div>
@@ -100,7 +100,7 @@ export default function Serving() {
       {/* Task list */}
       <div className="lists">
         <div className="list">
-          <h3>Serving Tasks</h3>
+          <h3>Tables Tasks</h3>
           <div className="box-list" style={{ paddingTop: 0 }}>
             <TaskList
               tasks={tasks}

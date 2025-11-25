@@ -36,7 +36,7 @@ function App({ initialSection }) {
 
       { key: 'cooking-tasks', label: 'Cooking', icon: '🍳', count: 4 },
       { key: 'recipes', label: 'Recipes', icon: '📖' },
-      { key: 'serving', label: 'Serving', icon: '🍽️' },
+      { key: 'tables', label: 'Tables', icon: '🍽️' },
       { key: 'settings', label: 'Settings', icon: '⚙️' },
     ],
     []
@@ -56,7 +56,7 @@ function App({ initialSection }) {
     if (current === 'cooking-tasks') {
       return <CookingTasks />;
     }
-    if (current === 'serving') {
+    if (current === 'tables') {
       return <Serving />;
     }
     if (current === 'dashboard') {
@@ -171,8 +171,8 @@ function App({ initialSection }) {
               return;
             }
 
-            if (key === 'serving') {
-              setCurrent('serving');
+            if (key === 'tables') {
+              setCurrent('tables');
               return;
             }
             setCurrent(key);
