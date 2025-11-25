@@ -34,7 +34,7 @@ function App({ initialSection }) {
       { key: 'dashboard', label: 'Dashboard', icon: '🏠' },
       { key: 'ingredients', label: 'Ingredients', icon: '🧅', count: 5 },
 
-      { key: 'cooking-tasks', label: 'Cooking Tasks', icon: '🍳', count: 4 },
+      { key: 'cooking-tasks', label: 'Cooking', icon: '🍳', count: 4 },
       { key: 'recipes', label: 'Recipes', icon: '📖' },
       { key: 'serving', label: 'Serving', icon: '🍽️' },
       { key: 'settings', label: 'Settings', icon: '⚙️' },

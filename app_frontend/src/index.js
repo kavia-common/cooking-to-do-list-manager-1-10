@@ -9,7 +9,7 @@ import Serving from './pages/Serving';
 import Dashboard from './pages/Dashboard';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-// Mount the application with client-side routing for App, Providers/Recipes/Ingredients via prop, dedicated Cooking Tasks, and Settings.
+// Mount the application with client-side routing for App, Recipes/Ingredients via prop, dedicated Cooking, and Settings.
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>

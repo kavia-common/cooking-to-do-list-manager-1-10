@@ -116,7 +116,7 @@ export default function Settings() {
                   <div className="task-title" id="notif-due">
                     <span style={{ fontWeight: 600 }}>Task reminders</span>
                   </div>
-                  <div className="task-notes">Receive reminders for upcoming cooking tasks</div>
+                  <div className="task-notes">Receive reminders for upcoming cooking</div>
                 </div>
               </div>
               <div className="task-actions">

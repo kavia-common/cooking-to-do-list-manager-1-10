@@ -115,7 +115,7 @@ export default function CookingTasks() {
         <div className="category-title">
           <span className="category-icon" aria-hidden>🍳</span>
           <div>
-            <h2>Cooking Tasks</h2>
+            <h2>Cooking</h2>
             <p className="muted">Organize your prep, cooking, and serving tasks</p>
           </div>
         </div>

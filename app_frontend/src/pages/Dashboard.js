@@ -37,7 +37,7 @@ export default function Dashboard() {
             <h3 className="hero-title">Welcome back!</h3>
             <p className="hero-subtitle">
               This is your starting point. Navigate using the left drawer to manage ingredients, meal
-              prep, cooking tasks, and more. Use the + button to quickly add items as you work.
+              prep, cooking, and more. Use the + button to quickly add items as you work.
             </p>
           </div>
           <div className="hero-actions" aria-hidden />
