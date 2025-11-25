@@ -20,9 +20,6 @@ export default function TaskList({ tasks, onReorder, onToggleDone, onDelete, onE
       {tasks.length === 0 && (
         <div className="empty">
           <p>Nothing here yet. Use the + button to add your first item.</p>
-          <p className="muted" style={{ marginTop: 8, fontSize: 12 }}>
-            Tip: You may see example items under Ingredients labeled "Sample:" to help you get started.
-          </p>
         </div>
       )}
       {tasks.map((t, idx) => (

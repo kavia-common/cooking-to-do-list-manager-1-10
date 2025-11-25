@@ -5,7 +5,6 @@ import { Theme, setCSSVariables } from './theme';
 import Sidebar from './components/Sidebar';
 import FAB from './components/FAB';
 import Recipes from './pages/Recipes';
-import Ingredients from './pages/Ingredients';
 
 import Serving from './pages/Serving';
 import Dashboard from './pages/Dashboard';
@@ -31,7 +30,6 @@ function App({ initialSection }) {
   const navCategories = useMemo(
     () => [
       { key: 'dashboard', label: 'Dashboard', icon: '🏠' },
-      { key: 'ingredients', label: 'Ingredients', icon: '🧅', count: 5 },
       { key: 'recipes', label: 'Recipes', icon: '📖' },
       { key: 'tables', label: 'Seat Assignments', icon: '🍽️' },
       { key: 'settings', label: 'Settings', icon: '⚙️' },
@@ -46,9 +44,7 @@ function App({ initialSection }) {
     if (current === 'recipes') {
       return <Recipes />;
     }
-    if (current === 'ingredients') {
-      return <Ingredients />;
-    }
+
 
 
     if (current === 'tables') {
@@ -84,7 +80,7 @@ function App({ initialSection }) {
                   : `You are viewing: ${active?.label}`}
               </h3>
               <p className="hero-subtitle">
-                Use the + button to add items. The left drawer helps you jump across sections like ingredients, recipes, and seating.
+                Use the + button to add items. The left drawer helps you jump across sections like recipes and seating.
               </p>
             </div>
             <div className="hero-actions">
@@ -114,8 +110,6 @@ function App({ initialSection }) {
     // Placeholder: in a future task, this can open TaskFormModal wired to current section
     if (current === 'recipes') {
       alert('Add Recipe (placeholder)');
-    } else if (current === 'ingredients') {
-      alert('Add Ingredient (placeholder)');
     } else if (current === 'tables') {
       alert('Seat Assignments do not support tasks.');
     } else {
@@ -154,10 +148,6 @@ function App({ initialSection }) {
             }
             if (key === 'recipes') {
               setCurrent('recipes');
-              return;
-            }
-            if (key === 'ingredients') {
-              setCurrent('ingredients');
               return;
             }
 
