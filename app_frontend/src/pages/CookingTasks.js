@@ -44,7 +44,7 @@ export default function CookingTasks() {
   const categoriesMeta = [
     { key: 'prep', label: 'Prep', icon: '🧰', hint: 'Prepare ingredients and station' },
     { key: 'cooking', label: 'Cooking', icon: '🍳', hint: 'Active stove/oven tasks' },
-    { key: 'serving', label: 'Tables', icon: '🍽️', hint: 'Presentation and plating' },
+    { key: 'serving', label: 'Seat Assignments', icon: '🍽️', hint: 'Assign seats and manage table seating' },
   ];
 
   const openAdd = () => {
@@ -127,7 +127,7 @@ export default function CookingTasks() {
             Cooking
           </button>
           <button className="btn" onClick={() => setActiveCategory('serving')} aria-pressed={activeCategory === 'serving'}>
-            Tables
+            Seat Assignments
           </button>
           <button className="btn primary" onClick={openAdd}>Add Task</button>
         </div>

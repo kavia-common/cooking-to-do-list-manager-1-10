@@ -6,8 +6,8 @@ import { createTask, reorder } from '../utils/types';
 
 /**
  * PUBLIC_INTERFACE
- * Tables page
- * - Dedicated page for displaying and managing table-related tasks.
+ * Seat Assignments page
+ * - Dedicated page for displaying and managing seat assignments at restaurant tables.
  * - Follows the same categorized task structure styling and interactions.
  * - Users can view, add, edit, delete, complete, and reorder serving tasks locally.
  */
@@ -73,8 +73,8 @@ export default function Serving() {
         <div className="category-title">
           <span className="category-icon" aria-hidden>🍽️</span>
           <div>
-            <h2>Tables</h2>
-            <p className="muted">Presentation, plating, and table service tasks</p>
+            <h2>Seat Assignments</h2>
+            <p className="muted">Assign guests to seats and manage table seating logistics</p>
           </div>
         </div>
         <div className="hero-actions">
@@ -87,10 +87,10 @@ export default function Serving() {
         <div className="hero-inner">
           <div className="hero-icon" aria-hidden>🌊</div>
           <div className="hero-text">
-            <h3 className="hero-title">Serve with style and ease</h3>
+            <h3 className="hero-title">Organize seat assignments efficiently</h3>
             <p className="hero-subtitle">
-              Manage tasks for plating, garnishing, timing, and table setup. Add items, mark them
-              complete, edit details, and drag to reorder—all consistent with the Ocean Professional theme.
+              Manage tasks related to assigning guests to seats, coordinating table layouts, and adjusting seat plans.
+              Add items, mark them complete, edit details, and drag to reorder—all consistent with the Ocean Professional theme.
             </p>
           </div>
           <div className="hero-actions" aria-hidden />
@@ -100,7 +100,7 @@ export default function Serving() {
       {/* Task list */}
       <div className="lists">
         <div className="list">
-          <h3>Tables Tasks</h3>
+          <h3>Seat Assignment Tasks</h3>
           <div className="box-list" style={{ paddingTop: 0 }}>
             <TaskList
               tasks={tasks}

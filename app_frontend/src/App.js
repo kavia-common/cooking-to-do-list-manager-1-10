@@ -28,7 +28,7 @@ function App({ initialSection }) {
     document.title = 'chef master';
   }, []);
 
-  // Side navigation categories for cooking
+  // Side navigation categories for cooking (tables now refers to seat assignments)
   const navCategories = useMemo(
     () => [
       { key: 'dashboard', label: 'Dashboard', icon: '🏠' },
@@ -36,7 +36,7 @@ function App({ initialSection }) {
 
       { key: 'cooking-tasks', label: 'Cooking', icon: '🍳', count: 4 },
       { key: 'recipes', label: 'Recipes', icon: '📖' },
-      { key: 'tables', label: 'Tables', icon: '🍽️' },
+      { key: 'tables', label: 'Seat Assignments', icon: '🍽️' },
       { key: 'settings', label: 'Settings', icon: '⚙️' },
     ],
     []
@@ -73,7 +73,7 @@ function App({ initialSection }) {
             </span>
             <div>
               <h2>{active?.label || 'chef master'}</h2>
-              <p className="muted">Ocean Professional • clean and minimal</p>
+              <p className="muted">Ocean Professional • clean and minimal (Seat management where applicable)</p>
             </div>
           </div>
           <div className="hero-actions" aria-hidden />
@@ -172,6 +172,7 @@ function App({ initialSection }) {
             }
 
             if (key === 'tables') {
+              // Seat Assignments section
               setCurrent('tables');
               return;
             }

@@ -23,6 +23,7 @@ root.render(
         <Route path="/cooking-tasks" element={<CookingTasks />} />
         <Route path="/serving" element={<Serving />} />
         <Route path="/tables" element={<Serving />} />
+        <Route path="/seat-assignments" element={<Serving />} />
         <Route
           path="/settings"
           element={
