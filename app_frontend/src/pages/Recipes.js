@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Theme, setCSSVariables } from '../theme';
+import { loadState } from '../utils/storage';
+import { ensureSampleDataSeeded } from '../utils/sampleData';
 
 /**
  * PUBLIC_INTERFACE
  * Recipes page
- * - Provides a foundation for displaying or managing recipes.
+ * - Displays seeded sample tasks grouped under Prep, Cooking, and Serving so demo users
+ *   can immediately see content.
  * - Ocean Professional styling using existing CSS tokens.
- * - Includes a placeholder grid and call-to-action for future recipe content.
  */
 export default function Recipes() {
   useEffect(() => {
@@ -16,8 +18,24 @@ export default function Recipes() {
     document.title = 'chef master';
   }, []);
 
+  // Ensure sample data exists; then read from storage
+  const initialState = useMemo(() => ensureSampleDataSeeded(), []);
   const [query, setQuery] = useState('');
   const [view, setView] = useState('all'); // all | favorites | drafts
+  const lists = initialState?.lists || { prep: [], cooking: [], serving: [] };
+
+  // Simple filter by title/notes for demo
+  const filterMatch = (t) => {
+    const q = query.trim().toLowerCase();
+    if (!q) return true;
+    return (t.title?.toLowerCase().includes(q) || t.notes?.toLowerCase().includes(q));
+  };
+
+  const groups = [
+    { key: 'prep', label: 'Prep', icon: '🧑‍🍳' },
+    { key: 'cooking', label: 'Cooking', icon: '🔥' },
+    { key: 'serving', label: 'Serving', icon: '🍽️' },
+  ];
 
   return (
     <div className="card">
@@ -41,9 +59,8 @@ export default function Recipes() {
           <div className="hero-text">
             <h3 className="hero-title">Your personal cookbook</h3>
             <p className="hero-subtitle">
-              Create and curate recipes for your kitchen flow. Use search and filters to quickly
-              find what you need. For now, sample recipe tasks are visible in the Dashboard under
-              Prep, Cooking, and Serving lists.
+              We’ve loaded a few sample recipe tasks to help you get started. Use search and filters
+              to quickly find what you need. You can manage and complete these items from here or the Dashboard.
             </p>
           </div>
           <div className="hero-actions" style={{ minWidth: 260, flex: '0 0 280px', display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -68,6 +85,8 @@ export default function Recipes() {
                 className={`btn ${view === 'favorites' ? 'primary' : ''}`}
                 onClick={() => setView('favorites')}
                 aria-pressed={view === 'favorites'}
+                disabled
+                title="Coming soon"
               >
                 Favorites
               </button>
@@ -75,6 +94,8 @@ export default function Recipes() {
                 className={`btn ${view === 'drafts' ? 'primary' : ''}`}
                 onClick={() => setView('drafts')}
                 aria-pressed={view === 'drafts'}
+                disabled
+                title="Coming soon"
               >
                 Drafts
               </button>
@@ -83,21 +104,46 @@ export default function Recipes() {
         </div>
       </div>
 
-      {/* Placeholder recipes area - future grid/list */}
-      <div className="lists">
-        <div className="list">
-          <h3>Recipe Library</h3>
-          <div className="box-list" style={{ paddingTop: 0 }}>
-            <div className="empty">
-              <p>No recipes yet.</p>
-              <p className="muted" style={{ marginTop: 8, fontSize: 12 }}>
-                This is a placeholder area. In a future update, this section will display a grid/list of recipes
-                with thumbnails, tags, and quick actions. Use the "Add Recipe" button to start creating recipes
-                when functionality is available.
-              </p>
-            </div>
-          </div>
-        </div>
+      {/* Show seeded sample lists grouped by category */}
+      <div className="category-board">
+        {groups.map((g) => {
+          const items = (lists[g.key] || []).filter(filterMatch);
+          return (
+            <section key={g.key} className="category-box card">
+              <div className="category-header">
+                <div className="category-title">
+                  <span className="category-icon" aria-hidden>{g.icon}</span>
+                  <div>
+                    <h2>{g.label}</h2>
+                    <p className="muted">Sample tasks for {g.label.toLowerCase()}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="box-list" style={{ paddingTop: 0 }}>
+                {items.length === 0 ? (
+                  <div className="empty">
+                    <p>No items match your search.</p>
+                  </div>
+                ) : (
+                  <div className="task-list">
+                    {items.map((t) => (
+                      <div key={t.id} className="task-item">
+                        <div className="task-left" style={{ alignItems: 'center' }}>
+                          <div className="task-content">
+                            <div className="task-title" style={{ gap: 8 }}>
+                              <span style={{ fontWeight: 600 }}>{t.title}</span>
+                            </div>
+                            {t.notes ? <div className="task-notes">{t.notes}</div> : null}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </section>
+          );
+        })}
       </div>
     </div>
   );
