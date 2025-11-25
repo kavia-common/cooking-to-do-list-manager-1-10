@@ -42,7 +42,8 @@ export default function Recipes() {
             <h3 className="hero-title">Your personal cookbook</h3>
             <p className="hero-subtitle">
               Create and curate recipes for your kitchen flow. Use search and filters to quickly
-              find what you need. This page is a foundation for future recipe management.
+              find what you need. For now, sample recipe tasks are visible in the Dashboard under
+              Prep, Cooking, and Serving lists.
             </p>
           </div>
           <div className="hero-actions" style={{ minWidth: 260, flex: '0 0 280px', display: 'flex', flexDirection: 'column', gap: 10 }}>

@@ -8,6 +8,8 @@ import Recipes from './pages/Recipes';
 
 import Serving from './pages/Serving';
 import Dashboard from './pages/Dashboard';
+import { ensureSampleDataSeeded } from './utils/sampleData';
+import { loadState } from './utils/storage';
 
 /**
  * PUBLIC_INTERFACE
@@ -24,17 +26,31 @@ function App({ initialSection }) {
     document.body.style.background = Theme.colors.background;
     // Update browser tab title
     document.title = 'chef master';
+    // Seed sample data for first-time/demo users
+    ensureSampleDataSeeded();
   }, []);
 
   // Side navigation categories for cooking (tables now refers to seat assignments)
+  const [navCounts, setNavCounts] = useState({ prep: 0, cooking: 0, serving: 0 });
+  useEffect(() => {
+    // Update counts from storage to show badge numbers on navigation
+    const st = loadState();
+    const lists = st?.lists || {};
+    setNavCounts({
+      prep: (lists.prep || []).length,
+      cooking: (lists.cooking || []).length,
+      serving: (lists.serving || []).length,
+    });
+  }, []);
+
   const navCategories = useMemo(
     () => [
       { key: 'dashboard', label: 'Dashboard', icon: '🏠' },
       { key: 'recipes', label: 'Recipes', icon: '📖' },
-      { key: 'tables', label: 'Seat Assignments', icon: '🍽️' },
+      { key: 'tables', label: 'Seat Assignments', icon: '🍽️', count: navCounts.prep + navCounts.cooking + navCounts.serving },
       { key: 'settings', label: 'Settings', icon: '⚙️' },
     ],
-    []
+    [navCounts]
   );
 
   const [current, setCurrent] = useState(initialSection || 'dashboard');
@@ -44,8 +60,6 @@ function App({ initialSection }) {
     if (current === 'recipes') {
       return <Recipes />;
     }
-
-
 
     if (current === 'tables') {
       return <Serving />;
@@ -150,7 +164,6 @@ function App({ initialSection }) {
               setCurrent('recipes');
               return;
             }
-
 
             if (key === 'tables') {
               // Seat Assignments section
