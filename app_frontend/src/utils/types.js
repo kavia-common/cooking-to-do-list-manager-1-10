@@ -1,11 +1,13 @@
 export const DEFAULT_CATEGORIES = [];
 export const DEFAULT_LISTS = {};
 
-// PUBLIC_INTERFACE
+/** 
+ * PUBLIC_INTERFACE
+ */
 export function createTask(title, notes = '', priority = 'medium') {
   /**
-   * Creates a new task object without any category baked in.
-   * Section assignment is handled in App.js and excludes 'serving'.
+   * Creates a new task object with no category baked in.
+   * Recipes are stored in a single unified list (lists.recipes).
    */
   return {
     id: `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,

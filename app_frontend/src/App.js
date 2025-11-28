@@ -31,14 +31,12 @@ function App({ initialSection }) {
   }, []);
 
   // Side navigation counts for recipes-related items to display on badges if desired
-  const [navCounts, setNavCounts] = useState({ prep: 0, cooking: 0, serving: 0 });
+  const [navCounts, setNavCounts] = useState({ recipes: 0 });
   useEffect(() => {
     const st = loadState();
     const lists = st?.lists || {};
     setNavCounts({
-      prep: (lists.prep || []).length,
-      cooking: (lists.cooking || []).length,
-      serving: (lists.serving || []).length,
+      recipes: (lists.recipes || []).length,
     });
   }, []);
 
@@ -46,8 +44,8 @@ function App({ initialSection }) {
     () => [
       { key: 'dashboard', label: 'Dashboard', icon: '🏠' },
       { key: 'ingredients', label: 'Ingredients', icon: '🧅' },
-      { key: 'recipes', label: 'Recipes', icon: '📖' },
-      { key: 'tables', label: 'Seat Assignments', icon: '🍽️', count: navCounts.prep + navCounts.cooking + navCounts.serving },
+      { key: 'recipes', label: 'Recipes', icon: '📖', count: navCounts.recipes },
+      { key: 'tables', label: 'Seat Assignments', icon: '🍽️' },
       { key: 'settings', label: 'Settings', icon: '⚙️' },
     ],
     [navCounts]

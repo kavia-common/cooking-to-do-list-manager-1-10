@@ -1,7 +1,8 @@
 const STORAGE_KEY = 'cooking_todo_lists_v1';
-// Note: This key stores a single list under { lists: { list: Task[] } }.
+// Note: State shape is { lists: { [key: string]: Task[] } }.
+// For recipes, we now use a single unified list at lists.recipes.
 // If the structure needs to evolve in future, bump the suffix (e.g., _v2) and
-// provide a migration step in App initialization to keep user data.
+// provide a migration step in the corresponding page or app initialization to keep user data.
 
 // PUBLIC_INTERFACE
 export function loadState() {

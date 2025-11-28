@@ -1,10 +1,11 @@
+import { createTask } from './types';
+import { loadState, saveState } from './storage';
+
 //
 // Sample data helpers: provide demo recipe tasks categorized into prep, cooking, and serving.
 // These tasks appear for first-time users by seeding localStorage if empty.
+// The Recipes page now migrates these categorized tasks into a single unified list (lists.recipes).
 //
-
-import { createTask } from './types';
-import { loadState, saveState } from './storage';
 
 // PUBLIC_INTERFACE
 export function getSampleRecipeTasks() {

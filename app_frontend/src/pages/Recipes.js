@@ -1,14 +1,17 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Theme, setCSSVariables } from '../theme';
-import { loadState } from '../utils/storage';
+import TaskList from '../components/TaskList';
+import TaskFormModal from '../components/TaskFormModal';
+import { loadState, saveState } from '../utils/storage';
 import { ensureSampleDataSeeded } from '../utils/sampleData';
+import { createTask, reorder as reorderList } from '../utils/types';
 
 /**
  * PUBLIC_INTERFACE
  * Recipes page
- * - Displays seeded sample tasks grouped under Prep, Cooking, and Serving so demo users
- *   can immediately see content.
- * - Ocean Professional styling using existing CSS tokens.
+ * - Represents recipes as a single unified list.
+ * - Full CRUD: add, edit, delete, toggle complete, and reorder via drag.
+ * - Persists to localStorage using the shared app state structure.
  */
 export default function Recipes() {
   useEffect(() => {
@@ -18,133 +21,167 @@ export default function Recipes() {
     document.title = 'chef master';
   }, []);
 
-  // Ensure sample data exists; then read from storage
-  const initialState = useMemo(() => ensureSampleDataSeeded(), []);
-  const [query, setQuery] = useState('');
-  const [view, setView] = useState('all'); // all | favorites | drafts
-  const lists = initialState?.lists || { prep: [], cooking: [], serving: [] };
+  // Seed sample data if none; then load current state
+  const initial = useMemo(() => ensureSampleDataSeeded(), []);
+  const [state, setState] = useState(() => initial || loadState() || { lists: { recipes: [] } });
 
-  // Simple filter by title/notes for demo
-  const filterMatch = (t) => {
+  // Modal management
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editItem, setEditItem] = useState(null);
+
+  // Search
+  const [query, setQuery] = useState('');
+
+  // Derive unified recipes list from state
+  // We will migrate old multi-list data (prep/cooking/serving) into 'recipes' key if needed.
+  const lists = state?.lists || {};
+  const hasUnified = Array.isArray(lists.recipes);
+  const migratedRecipes = useMemo(() => {
+    if (hasUnified) return lists.recipes;
+    const merged = [
+      ...(lists.prep || []),
+      ...(lists.cooking || []),
+      ...(lists.serving || []),
+    ];
+    return merged;
+  }, [lists, hasUnified]);
+
+  // One-time migration to single list key if necessary
+  useEffect(() => {
+    if (!hasUnified) {
+      setState(prev => {
+        const merged = [
+          ...(prev?.lists?.prep || []),
+          ...(prev?.lists?.cooking || []),
+          ...(prev?.lists?.serving || []),
+        ];
+        const next = { lists: { ...prev.lists, recipes: merged } };
+        saveState(next);
+        return next;
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasUnified]);
+
+  // Persist on any state change
+  useEffect(() => {
+    if (state) saveState(state);
+  }, [state]);
+
+  const openAdd = () => {
+    setEditItem(null);
+    setModalOpen(true);
+  };
+
+  const onSubmitModal = (data) => {
+    setState(prev => {
+      const current = prev?.lists?.recipes || [];
+      if (editItem) {
+        const updated = current.map(t => (t.id === editItem.id ? { ...t, ...data } : t));
+        return { lists: { ...prev.lists, recipes: updated } };
+      }
+      const newTask = createTask(data.title, data.notes, data.priority || 'medium');
+      return { lists: { ...prev.lists, recipes: [newTask, ...current] } };
+    });
+    setModalOpen(false);
+    setEditItem(null);
+  };
+
+  const toggle = (id) => {
+    setState(prev => {
+      const arr = prev?.lists?.recipes || [];
+      const next = arr.map(t => (t.id === id ? { ...t, done: !t.done } : t));
+      return { lists: { ...prev.lists, recipes: next } };
+    });
+  };
+  const remove = (id) => {
+    setState(prev => {
+      const arr = prev?.lists?.recipes || [];
+      const next = arr.filter(t => t.id !== id);
+      return { lists: { ...prev.lists, recipes: next } };
+    });
+  };
+  const edit = (task) => {
+    setEditItem(task);
+    setModalOpen(true);
+  };
+  const reorder = (from, to) => {
+    setState(prev => {
+      const arr = prev?.lists?.recipes || [];
+      const next = reorderList(arr, from, to);
+      return { lists: { ...prev.lists, recipes: next } };
+    });
+  };
+
+  const filtered = migratedRecipes.filter((t) => {
     const q = query.trim().toLowerCase();
     if (!q) return true;
     return (t.title?.toLowerCase().includes(q) || t.notes?.toLowerCase().includes(q));
-  };
-
-  const groups = [
-    { key: 'prep', label: 'Prep', icon: '🧑‍🍳' },
-    { key: 'cooking', label: 'Cooking', icon: '🔥' },
-    { key: 'serving', label: 'Serving', icon: '🍽️' },
-  ];
+  });
 
   return (
     <div className="card">
+      {/* Header */}
       <div className="category-header box-header">
         <div className="category-title">
           <span className="category-icon" aria-hidden>📖</span>
           <div>
             <h2>Recipes</h2>
-            <p className="muted">Collect, organize, and manage your recipes</p>
+            <p className="muted">A single list to manage all your recipes</p>
           </div>
         </div>
         <div className="hero-actions">
           <button className="btn" onClick={() => setQuery('')}>Clear</button>
-          <button className="btn primary" onClick={() => alert('Add Recipe (placeholder)')}>Add Recipe</button>
+          <button className="btn primary" onClick={openAdd}>Add Recipe</button>
         </div>
       </div>
 
+      {/* Hero / Controls */}
       <div className="hero">
         <div className="hero-inner" style={{ rowGap: 10 }}>
           <div className="hero-icon" aria-hidden>🌊</div>
           <div className="hero-text">
             <h3 className="hero-title">Your personal cookbook</h3>
             <p className="hero-subtitle">
-              We’ve loaded a few sample recipe tasks to help you get started. Use search and filters
-              to quickly find what you need. You can manage and complete these items from here or the Dashboard.
+              Manage all recipes in one place. Add notes, mark as complete when perfected, and reorder to prioritize.
             </p>
           </div>
           <div className="hero-actions" style={{ minWidth: 260, flex: '0 0 280px', display: 'flex', flexDirection: 'column', gap: 10 }}>
             <div className="field" style={{ margin: 0 }}>
               <span>Search recipes</span>
               <input
-                placeholder="Search by title, tags, or ingredients"
+                placeholder="Search by title or notes"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 aria-label="Search recipes"
               />
             </div>
-            <div className="hero-actions" style={{ gap: 8 }}>
-              <button
-                className={`btn ${view === 'all' ? 'primary' : ''}`}
-                onClick={() => setView('all')}
-                aria-pressed={view === 'all'}
-              >
-                All
-              </button>
-              <button
-                className={`btn ${view === 'favorites' ? 'primary' : ''}`}
-                onClick={() => setView('favorites')}
-                aria-pressed={view === 'favorites'}
-                disabled
-                title="Coming soon"
-              >
-                Favorites
-              </button>
-              <button
-                className={`btn ${view === 'drafts' ? 'primary' : ''}`}
-                onClick={() => setView('drafts')}
-                aria-pressed={view === 'drafts'}
-                disabled
-                title="Coming soon"
-              >
-                Drafts
-              </button>
-            </div>
           </div>
         </div>
       </div>
 
-      {/* Show seeded sample lists grouped by category */}
-      <div className="category-board">
-        {groups.map((g) => {
-          const items = (lists[g.key] || []).filter(filterMatch);
-          return (
-            <section key={g.key} className="category-box card">
-              <div className="category-header">
-                <div className="category-title">
-                  <span className="category-icon" aria-hidden>{g.icon}</span>
-                  <div>
-                    <h2>{g.label}</h2>
-                    <p className="muted">Sample tasks for {g.label.toLowerCase()}</p>
-                  </div>
-                </div>
-              </div>
-              <div className="box-list" style={{ paddingTop: 0 }}>
-                {items.length === 0 ? (
-                  <div className="empty">
-                    <p>No items match your search.</p>
-                  </div>
-                ) : (
-                  <div className="task-list">
-                    {items.map((t) => (
-                      <div key={t.id} className="task-item">
-                        <div className="task-left" style={{ alignItems: 'center' }}>
-                          <div className="task-content">
-                            <div className="task-title" style={{ gap: 8 }}>
-                              <span style={{ fontWeight: 600 }}>{t.title}</span>
-                            </div>
-                            {t.notes ? <div className="task-notes">{t.notes}</div> : null}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </section>
-          );
-        })}
+      {/* Single unified list */}
+      <div className="lists">
+        <div className="list">
+          <h3>All Recipes</h3>
+          <div className="box-list" style={{ paddingTop: 0 }}>
+            <TaskList
+              tasks={filtered}
+              onReorder={reorder}
+              onToggleDone={toggle}
+              onDelete={remove}
+              onEdit={edit}
+            />
+          </div>
+        </div>
       </div>
+
+      <TaskFormModal
+        open={modalOpen}
+        onClose={() => { setModalOpen(false); setEditItem(null); }}
+        onSubmit={onSubmitModal}
+        initial={editItem ? { title: editItem.title, notes: editItem.notes, priority: editItem.priority || 'medium' } : undefined}
+      />
     </div>
   );
 }

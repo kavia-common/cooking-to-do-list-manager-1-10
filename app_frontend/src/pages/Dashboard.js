@@ -11,6 +11,9 @@ import { ensureSampleDataSeeded } from '../utils/sampleData';
  * Dashboard page
  * - Entry overview page with categorized cooking tasks (prep, cooking, serving).
  * - Seeds demo recipe tasks on first load for new or demo users.
+ *   Note: The Recipes page now uses a single unified list (lists.recipes) and will
+ *   migrate any categorized items on first load of that page. This dashboard remains
+ *   categorized to preserve its overview layout.
  */
 export default function Dashboard() {
   const [state, setState] = useState(() => ensureSampleDataSeeded());
