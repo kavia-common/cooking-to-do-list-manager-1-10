@@ -45,7 +45,7 @@ function App({ initialSection }) {
       { key: 'dashboard', label: 'Dashboard', icon: '🏠' },
       { key: 'ingredients', label: 'Ingredients', icon: '🧅' },
       { key: 'recipes', label: 'Recipes', icon: '📖', count: navCounts.recipes },
-      { key: 'tables', label: 'Seat Assignments', icon: '🍽️' },
+      { key: 'tables', label: 'Tables', icon: '🍽️' },
       { key: 'settings', label: 'Settings', icon: '⚙️' },
     ],
     [navCounts]
@@ -125,7 +125,7 @@ function App({ initialSection }) {
     } else if (current === 'recipes') {
       alert('Add Recipe (placeholder)');
     } else if (current === 'tables') {
-      alert('Seat Assignments do not support tasks.');
+      alert('Tables do not support tasks.');
     } else {
       alert('Add item (placeholder)');
     }

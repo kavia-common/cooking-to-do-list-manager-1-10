@@ -4,10 +4,10 @@ import { getRestaurantLayoutConfig, getTableLabels } from '../utils/config';
 
 /**
  * PUBLIC_INTERFACE
- * Seat Assignments page
+ * Tables page
  * - Displays an interactive restaurant table grid driven by configurable rows/columns.
  * - Allows selecting a table cell and mapping a simple assignment label to that table.
- * - All task-related UI and logic have been removed to focus purely on seat assignments.
+ * - All task-related UI and logic have been removed to focus purely on table assignments.
  */
 export default function Serving() {
   useEffect(() => {
@@ -69,7 +69,7 @@ export default function Serving() {
         <div className="category-title">
           <span className="category-icon" aria-hidden>🍽️</span>
           <div>
-            <h2>Seat Assignments</h2>
+            <h2>Tables</h2>
             <p className="muted">Assign guests to tables in a clear, responsive grid</p>
           </div>
         </div>
