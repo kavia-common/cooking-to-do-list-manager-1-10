@@ -10,6 +10,7 @@ export const Theme = {
     secondary: '#F59E0B',  // Amber
     error: '#EF4444',
     surface: '#ffffff',
+    // Main app background per style guide (modern, light, minimal)
     background: '#f9fafb',
     text: '#111827',
     muted: '#6B7280',

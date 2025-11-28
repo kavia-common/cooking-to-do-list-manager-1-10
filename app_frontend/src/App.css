@@ -16,7 +16,8 @@ html,body,#root{height:100%}
 
 body{
   margin:0;
-  background: var(--color-background);
+  /* Main app background: follows Ocean Professional style guide (#f9fafb) */
+  background: var(--color-background, #f9fafb);
   color: var(--color-text);
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
 }
