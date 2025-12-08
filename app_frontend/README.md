@@ -15,8 +15,17 @@ In the project directory, you can run:
 
 ### `npm start`
 
-Runs the app in development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Runs the app in development mode.
+
+Port selection:
+- By default, the dev server will use the `REACT_APP_PORT` environment variable if set.
+- If `REACT_APP_PORT` is not set, it will default to port `3010` (chosen to avoid conflicts with 3000–3009).
+- To force port 3000 explicitly, set `REACT_APP_PORT=3000` in your `.env`.
+- Example:
+  - `REACT_APP_PORT=3000 npm start` -> runs on http://localhost:3000
+  - `REACT_APP_PORT=3010 npm start` -> runs on http://localhost:3010
+
+Open http://localhost:PORT to view it in your browser.
 
 ### `npm test`
 
@@ -26,6 +35,12 @@ Launches the test runner in interactive watch mode.
 
 Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
+
+### Healthcheck
+
+A simple health endpoint is available at `/health` (served as a static file). Use:
+- http://localhost:PORT/health
+The default path can be controlled via `REACT_APP_HEALTHCHECK_PATH` if your orchestrator rewrites requests.
 
 ## Customization
 
